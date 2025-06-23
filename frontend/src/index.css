@@ -1,0 +1,104 @@
+@import "tailwindcss";
+* {
+  box-sizing: border-box;
+}
+
+@keyframes bounceY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-11.8222px);
+  }
+}
+
+.bounce-y {
+  animation: bounceY 6s ease-in-out infinite;
+}
+
+.fade {
+  transition: opacity 0.15s linear;
+}
+
+.box-shadow {
+  box-shadow: 0 10px 40px rgba(24, 26, 32, 0.05);
+}
+
+/* Home Slider Style  */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  background: #22b99a;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 0 2px #000;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  background: #22b99a;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+.img-animattion {
+  transition: all 0.4s ease;
+}
+
+.img-animattion:hover {
+  transform: scale(1.1) rotate(-1deg);
+}
+
+@media (min-width: 1440px) and (max-width: 1440px) {
+  .ml-at-1440 {
+    margin-left: 6rem; /* Tailwind's ml-24 = 6rem = 96px */
+  }
+}
+
+/* Navbar Style Animation */
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slideInDown {
+  animation-name: slideInDown;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+/* Animation */
+
+.animate-up-5 {
+  animation-delay: 0.5s;
+  animation-name: fadeInUp;
+  animation-fill-mode: both;
+  animation-duration: 0.5s;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  transform: translateY(0px);
+}
+
+/* Listing Crads */
+@media (width: 768px) {
+  .listing-layout-md-exact {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+@media (min-width: 769px) {
+  .listing-layout-md-exact {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+  }
+}
