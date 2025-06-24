@@ -15,6 +15,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 import django_filters
+from rest_framework.pagination import PageNumberPagination
 
 
 
@@ -250,6 +251,7 @@ class PropertyDetailAPIView(APIView):
 
 class NearbyPropertiesView(ListAPIView):
     serializer_class = PropertySerializer
+
     def get_queryset(self):
         city = self.request.query_params.get('city')
         current_property_id = self.request.query_params.get('exclude_id')
@@ -257,16 +259,17 @@ class NearbyPropertiesView(ListAPIView):
         if current_property_id:
             queryset = queryset.exclude(id=current_property_id)
         return queryset
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        
+
         # Pagination
         page = request.query_params.get('page', 1)
         per_page = request.query_params.get('per_page', 5)
 
+        paginator = PageNumberPagination()
+        paginator.page_size = per_page
+        result_page = paginator.paginate_queryset(queryset, request)
 
-
-
-
-
-
+        serializer = self.get_serializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
