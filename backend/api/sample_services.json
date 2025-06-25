@@ -1,0 +1,1018 @@
+{
+    "pagination": {
+        "total_items": 7,
+        "per_page": 7,
+        "currentPage": 1,
+        "totalPages": 1,
+        "from": 1,
+        "to": 7,
+        "next_page": null,
+        "previous_page": null
+    },
+    "data": [
+        {
+            "id": 131,
+            "name": "Food Photography by Anamika",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 71,
+            "price": 5000,
+            "price_format": "\u20b95000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "Anamika is  a Delhi-based photographer with over 8 years of professional experience, specializing in capturing compelling and visually stunning images. Over the years, I\u2019ve explored various genres of photography, but food photography remains my favourite . There's something deeply satisfying about showcasing the rich textures, vibrant colors, and intricate details of culinary creations through my lens.",
+            "is_featured": 1,
+            "provider_name": "Anamika Vaishnav",
+            "provider_image": "https:\/\/services.broki.in\/images\/user\/user.png",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/400\/Screenshot-2024-12-20-at-1.00.24\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/401\/Screenshot-2024-12-20-at-1.00.34\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/402\/Screenshot-2024-12-20-at-1.00.41\u202fPM.png"
+            ],
+            "attchments_array": [
+                {
+                    "id": 400,
+                    "url": "https:\/\/services.broki.in\/storage\/400\/Screenshot-2024-12-20-at-1.00.24\u202fPM.png"
+                },
+                {
+                    "id": 401,
+                    "url": "https:\/\/services.broki.in\/storage\/401\/Screenshot-2024-12-20-at-1.00.34\u202fPM.png"
+                },
+                {
+                    "id": 402,
+                    "url": "https:\/\/services.broki.in\/storage\/402\/Screenshot-2024-12-20-at-1.00.41\u202fPM.png"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 10
+        },
+        {
+            "id": 130,
+            "name": "Food Photography by Indraneil",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 70,
+            "price": 40000,
+            "price_format": "\u20b940000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "Indraneil is a food photographer and stylist based in Delhi with 7years of experience, he specialize in showcasing the vibrant textures and colors of food through his art. Catering to esteemed clients who value exceptional creativity, he operate as a one-man army, equipped with all the gear required for high-budget photo and video productions. With my personal collection of curated backdrops and props, I deliver tailored visuals that elevate every culinary story.",
+            "is_featured": 1,
+            "provider_name": "Indraneil Tomar",
+            "provider_image": "https:\/\/services.broki.in\/images\/user\/user.png",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/375\/Screenshot-2024-12-05-at-6.04.42\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/376\/Screenshot-2024-12-05-at-6.04.21\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/377\/Screenshot-2024-12-05-at-6.04.32\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/384\/Untitled-design-(1).jpg"
+            ],
+            "attchments_array": [
+                {
+                    "id": 375,
+                    "url": "https:\/\/services.broki.in\/storage\/375\/Screenshot-2024-12-05-at-6.04.42\u202fPM.png"
+                },
+                {
+                    "id": 376,
+                    "url": "https:\/\/services.broki.in\/storage\/376\/Screenshot-2024-12-05-at-6.04.21\u202fPM.png"
+                },
+                {
+                    "id": 377,
+                    "url": "https:\/\/services.broki.in\/storage\/377\/Screenshot-2024-12-05-at-6.04.32\u202fPM.png"
+                },
+                {
+                    "id": 384,
+                    "url": "https:\/\/services.broki.in\/storage\/384\/Untitled-design-(1).jpg"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 15
+        },
+        {
+            "id": 129,
+            "name": "Food Photography by Manjula",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 69,
+            "price": 25000,
+            "price_format": "\u20b925000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "Manjula is a self-taught food photographer and stylist based in Delhi with 3 years of experience, she specialize in capturing the vibrant textures and colors that make food irresistible. With a keen eye for detail and a passion for storytelling, I transform culinary creations into visual masterpieces. I bring my personal collection of curated backdrops and props to every shoot, ensuring a tailored and professional touch that enhances the essence of each dish.",
+            "is_featured": 1,
+            "provider_name": "Dr. Manjula Vijh",
+            "provider_image": "https:\/\/services.broki.in\/images\/user\/user.png",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/378\/Screenshot-2024-12-05-at-6.06.17\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/379\/Screenshot-2024-12-05-at-6.06.08\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/380\/Screenshot-2024-12-05-at-6.06.00\u202fPM.png"
+            ],
+            "attchments_array": [
+                {
+                    "id": 378,
+                    "url": "https:\/\/services.broki.in\/storage\/378\/Screenshot-2024-12-05-at-6.06.17\u202fPM.png"
+                },
+                {
+                    "id": 379,
+                    "url": "https:\/\/services.broki.in\/storage\/379\/Screenshot-2024-12-05-at-6.06.08\u202fPM.png"
+                },
+                {
+                    "id": 380,
+                    "url": "https:\/\/services.broki.in\/storage\/380\/Screenshot-2024-12-05-at-6.06.00\u202fPM.png"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [
+                {
+                    "id": 911,
+                    "service_id": 129,
+                    "provider_address_id": 53,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 53,
+                        "provider_id": 69,
+                        "address": "New delhi",
+                        "latitude": "28.6139298",
+                        "longitude": "77.2088282",
+                        "status": 1,
+                        "created_at": "2024-12-04T05:14:43.000000Z",
+                        "updated_at": "2024-12-04T05:14:43.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 912,
+                    "service_id": 129,
+                    "provider_address_id": 54,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 54,
+                        "provider_id": 69,
+                        "address": "Noida",
+                        "latitude": "28.5355161",
+                        "longitude": "77.3910265",
+                        "status": 1,
+                        "created_at": "2024-12-04T05:14:52.000000Z",
+                        "updated_at": "2024-12-04T05:14:52.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 913,
+                    "service_id": 129,
+                    "provider_address_id": 55,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 55,
+                        "provider_id": 69,
+                        "address": "Faridabad",
+                        "latitude": "28.4089123",
+                        "longitude": "77.3177894",
+                        "status": 1,
+                        "created_at": "2024-12-04T05:15:00.000000Z",
+                        "updated_at": "2024-12-04T05:15:00.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 914,
+                    "service_id": 129,
+                    "provider_address_id": 56,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 56,
+                        "provider_id": 69,
+                        "address": "Gurugram",
+                        "latitude": "28.4594965",
+                        "longitude": "77.0266383",
+                        "status": 1,
+                        "created_at": "2024-12-04T05:15:08.000000Z",
+                        "updated_at": "2024-12-04T05:15:08.000000Z",
+                        "deleted_at": null
+                    }
+                }
+            ],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 10
+        },
+        {
+            "id": 127,
+            "name": "Food Photography by Krishnendu",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 68,
+            "price": 20000,
+            "price_format": "\u20b920000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "Krishnendu is a seasoned food photographer with over 25 years of industry experience, specializing in capturing mouthwatering visuals that bring brands to life. Having collaborated with various renowned brands, Krishnendu is known for delivering high-quality work with creativity and precision. Committed to excellence, He ensures on-time delivery and stunning results that meet every client\u2019s unique vision.",
+            "is_featured": 1,
+            "provider_name": "Krishnendu Chatterjee",
+            "provider_image": "https:\/\/services.broki.in\/storage\/352\/1732786749896-04e37f36-28dd-406e-a489-f681b48669c4_1.jpg",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/382\/Screenshot-2024-12-05-at-6.09.21\u202fPM.png",
+                "https:\/\/services.broki.in\/storage\/383\/Screenshot-2024-12-05-at-6.09.07\u202fPM.png"
+            ],
+            "attchments_array": [
+                {
+                    "id": 382,
+                    "url": "https:\/\/services.broki.in\/storage\/382\/Screenshot-2024-12-05-at-6.09.21\u202fPM.png"
+                },
+                {
+                    "id": 383,
+                    "url": "https:\/\/services.broki.in\/storage\/383\/Screenshot-2024-12-05-at-6.09.07\u202fPM.png"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [
+                {
+                    "id": 900,
+                    "service_id": 127,
+                    "provider_address_id": 46,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 46,
+                        "provider_id": 68,
+                        "address": "New Delhi",
+                        "latitude": "28.6139298",
+                        "longitude": "77.2088282",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:14:33.000000Z",
+                        "updated_at": "2024-11-29T04:14:33.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 901,
+                    "service_id": 127,
+                    "provider_address_id": 47,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 47,
+                        "provider_id": 68,
+                        "address": "Gurugram",
+                        "latitude": "28.4594965",
+                        "longitude": "77.0266383",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:14:41.000000Z",
+                        "updated_at": "2024-11-29T04:14:41.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 902,
+                    "service_id": 127,
+                    "provider_address_id": 48,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 48,
+                        "provider_id": 68,
+                        "address": "Noida",
+                        "latitude": "28.5355161",
+                        "longitude": "77.3910265",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:14:49.000000Z",
+                        "updated_at": "2024-11-29T04:14:49.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 903,
+                    "service_id": 127,
+                    "provider_address_id": 49,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 49,
+                        "provider_id": 68,
+                        "address": "Faridabad",
+                        "latitude": "28.4089123",
+                        "longitude": "77.3177894",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:15:02.000000Z",
+                        "updated_at": "2024-11-29T04:15:02.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 904,
+                    "service_id": 127,
+                    "provider_address_id": 50,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 50,
+                        "provider_id": 68,
+                        "address": "Punjab",
+                        "latitude": "31.1471305",
+                        "longitude": "75.34121789999999",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:15:12.000000Z",
+                        "updated_at": "2024-11-29T04:15:12.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 905,
+                    "service_id": 127,
+                    "provider_address_id": 51,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 51,
+                        "provider_id": 68,
+                        "address": "Rajasthan",
+                        "latitude": "27.0238036",
+                        "longitude": "74.21793260000001",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:15:34.000000Z",
+                        "updated_at": "2024-11-29T04:15:34.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 906,
+                    "service_id": 127,
+                    "provider_address_id": 52,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 52,
+                        "provider_id": 68,
+                        "address": "Uttar Pradesh",
+                        "latitude": "27.5705886",
+                        "longitude": "80.0981869",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:15:43.000000Z",
+                        "updated_at": "2024-11-29T04:15:43.000000Z",
+                        "deleted_at": null
+                    }
+                }
+            ],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 20
+        },
+        {
+            "id": 126,
+            "name": "Food Photography by Manish",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 67,
+            "price": 15000,
+            "price_format": "\u20b915000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "Manish with 8 years of experience is having a deep understanding of the art and science of capturing food in its most appealing form. Over the years, they would have honed their skills in areas such as lighting, composition, styling, and post-processing to make dishes look appetizing and visually captivating.He has worked with restaurants, food brands, magazines like Radisson, Seven Seas Hotel,NDTV Good Times, Mad over chicken and many more.",
+            "is_featured": 0,
+            "provider_name": "Manish Rajput",
+            "provider_image": "https:\/\/services.broki.in\/images\/user\/user.png",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/403\/Screenshot-2025-01-20-at-11.52.14\u202fAM.png",
+                "https:\/\/services.broki.in\/storage\/404\/Screenshot-2025-01-20-at-11.52.44\u202fAM.png",
+                "https:\/\/services.broki.in\/storage\/405\/Screenshot-2025-01-20-at-11.52.32\u202fAM.png",
+                "https:\/\/services.broki.in\/storage\/406\/Screenshot-2025-01-20-at-11.52.29\u202fAM.png",
+                "https:\/\/services.broki.in\/storage\/407\/Screenshot-2025-01-20-at-11.52.24\u202fAM.png",
+                "https:\/\/services.broki.in\/storage\/408\/Screenshot-2025-01-20-at-11.52.18\u202fAM.png"
+            ],
+            "attchments_array": [
+                {
+                    "id": 403,
+                    "url": "https:\/\/services.broki.in\/storage\/403\/Screenshot-2025-01-20-at-11.52.14\u202fAM.png"
+                },
+                {
+                    "id": 404,
+                    "url": "https:\/\/services.broki.in\/storage\/404\/Screenshot-2025-01-20-at-11.52.44\u202fAM.png"
+                },
+                {
+                    "id": 405,
+                    "url": "https:\/\/services.broki.in\/storage\/405\/Screenshot-2025-01-20-at-11.52.32\u202fAM.png"
+                },
+                {
+                    "id": 406,
+                    "url": "https:\/\/services.broki.in\/storage\/406\/Screenshot-2025-01-20-at-11.52.29\u202fAM.png"
+                },
+                {
+                    "id": 407,
+                    "url": "https:\/\/services.broki.in\/storage\/407\/Screenshot-2025-01-20-at-11.52.24\u202fAM.png"
+                },
+                {
+                    "id": 408,
+                    "url": "https:\/\/services.broki.in\/storage\/408\/Screenshot-2025-01-20-at-11.52.18\u202fAM.png"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 0,
+            "advance_payment_amount": 0,
+            "moq": 1
+        },
+        {
+            "id": 125,
+            "name": "Food Photography by Ishant",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 65,
+            "price": 35000,
+            "price_format": "\u20b935000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "00:00",
+            "status": 1,
+            "description": "A seasoned Delhi-based food photographer with over 10 years of experience, specializing in creating captivating visuals that showcase the beauty of culinary artistry. With a diverse portfolio featuring collaborations with renowned brands like Tribe by Amrapali, Birdhichand Ghanshyamdas Jewelers, Pernia's Pop-Up Shop, and Cottons & Satins, I bring a refined touch to every project. My expertise lies in blending technical precision with creative flair to deliver compelling imagery tailored to elevate brand aesthetics and storytelling.",
+            "is_featured": 1,
+            "provider_name": "Ishant Kohli",
+            "provider_image": "https:\/\/services.broki.in\/storage\/348\/1732775724878-d3631b2b-273b-4020-bffa-f7ac52b41ab927---Ishant-Raj-Kohli-(1)_1.jpg",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/381\/Screenshot-2024-12-05-at-6.08.11\u202fPM.png"
+            ],
+            "attchments_array": [
+                {
+                    "id": 381,
+                    "url": "https:\/\/services.broki.in\/storage\/381\/Screenshot-2024-12-05-at-6.08.11\u202fPM.png"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [
+                {
+                    "id": 907,
+                    "service_id": 125,
+                    "provider_address_id": 37,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 37,
+                        "provider_id": 65,
+                        "address": "New Delhi",
+                        "latitude": "28.6139298",
+                        "longitude": "77.2088282",
+                        "status": 1,
+                        "created_at": "2024-11-29T02:44:38.000000Z",
+                        "updated_at": "2024-11-29T02:44:38.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 908,
+                    "service_id": 125,
+                    "provider_address_id": 39,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 39,
+                        "provider_id": 65,
+                        "address": "Noida",
+                        "latitude": "28.5355161",
+                        "longitude": "77.3910265",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:10:05.000000Z",
+                        "updated_at": "2024-11-29T04:10:05.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 909,
+                    "service_id": 125,
+                    "provider_address_id": 40,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 40,
+                        "provider_id": 65,
+                        "address": "Gurugram",
+                        "latitude": "28.4594965",
+                        "longitude": "77.0266383",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:10:13.000000Z",
+                        "updated_at": "2024-11-29T04:10:13.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 910,
+                    "service_id": 125,
+                    "provider_address_id": 41,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 41,
+                        "provider_id": 65,
+                        "address": "Faridabad",
+                        "latitude": "28.4089123",
+                        "longitude": "77.3177894",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:10:30.000000Z",
+                        "updated_at": "2024-11-29T04:10:30.000000Z",
+                        "deleted_at": null
+                    }
+                }
+            ],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 20
+        },
+        {
+            "id": 124,
+            "name": "Food Photography by Shubham",
+            "category_id": 29,
+            "subcategory_id": 55,
+            "provider_id": 64,
+            "price": 10000,
+            "price_format": "\u20b910000.00",
+            "type": "fixed",
+            "discount": 0,
+            "duration": "07:00",
+            "status": 1,
+            "description": "Shubham is skilled food photographer with 7 years of experience, specializing in capturing visually stunning, appetizing images for restaurants, brands, and publications. Expert in lighting, styling, and composition, with a proven ability to bring culinary creations to life through photography.",
+            "is_featured": 1,
+            "provider_name": "Shubham Sharma",
+            "provider_image": "https:\/\/services.broki.in\/storage\/342\/WhatsApp-Image-2024-11-26-at-1.03.18-PM.jpeg",
+            "city_id": 707,
+            "category_name": "Photography",
+            "subcategory_name": "Food Photography",
+            "attchments": [
+                "https:\/\/services.broki.in\/storage\/389\/DSC_0077.jpg",
+                "https:\/\/services.broki.in\/storage\/429\/IMG-20210719-WA0011.jpg",
+                "https:\/\/services.broki.in\/storage\/430\/IMG-20210719-WA0002.jpg",
+                "https:\/\/services.broki.in\/storage\/431\/IMG-20240509-WA0001.jpg",
+                "https:\/\/services.broki.in\/storage\/432\/IMG-20210719-WA0018.jpg",
+                "https:\/\/services.broki.in\/storage\/433\/IMG-20210719-WA0020.jpg",
+                "https:\/\/services.broki.in\/storage\/434\/IMG-20210719-WA0013.jpg",
+                "https:\/\/services.broki.in\/storage\/435\/IMG-20210719-WA0003.jpg",
+                "https:\/\/services.broki.in\/storage\/436\/IMG-20210719-WA0021.jpg",
+                "https:\/\/services.broki.in\/storage\/437\/IMG-20240518-WA0005.jpg",
+                "https:\/\/services.broki.in\/storage\/438\/IMG-20210719-WA0014.jpg",
+                "https:\/\/services.broki.in\/storage\/439\/IMG-20210719-WA0006.jpg",
+                "https:\/\/services.broki.in\/storage\/440\/IMG-20210719-WA0016.jpg",
+                "https:\/\/services.broki.in\/storage\/441\/IMG-20210719-WA0012.jpg",
+                "https:\/\/services.broki.in\/storage\/442\/IMG-20210719-WA0019.jpg",
+                "https:\/\/services.broki.in\/storage\/443\/IMG-20210719-WA0015.jpg",
+                "https:\/\/services.broki.in\/storage\/444\/IMG-20240509-WA0000.jpg",
+                "https:\/\/services.broki.in\/storage\/445\/IMG-20210719-WA0007.jpg",
+                "https:\/\/services.broki.in\/storage\/446\/IMG-20210719-WA0004.jpg",
+                "https:\/\/services.broki.in\/storage\/447\/IMG-20210719-WA0008.jpg",
+                "https:\/\/services.broki.in\/storage\/448\/IMG-20210719-WA0005.jpg"
+            ],
+            "attchments_array": [
+                {
+                    "id": 389,
+                    "url": "https:\/\/services.broki.in\/storage\/389\/DSC_0077.jpg"
+                },
+                {
+                    "id": 429,
+                    "url": "https:\/\/services.broki.in\/storage\/429\/IMG-20210719-WA0011.jpg"
+                },
+                {
+                    "id": 430,
+                    "url": "https:\/\/services.broki.in\/storage\/430\/IMG-20210719-WA0002.jpg"
+                },
+                {
+                    "id": 431,
+                    "url": "https:\/\/services.broki.in\/storage\/431\/IMG-20240509-WA0001.jpg"
+                },
+                {
+                    "id": 432,
+                    "url": "https:\/\/services.broki.in\/storage\/432\/IMG-20210719-WA0018.jpg"
+                },
+                {
+                    "id": 433,
+                    "url": "https:\/\/services.broki.in\/storage\/433\/IMG-20210719-WA0020.jpg"
+                },
+                {
+                    "id": 434,
+                    "url": "https:\/\/services.broki.in\/storage\/434\/IMG-20210719-WA0013.jpg"
+                },
+                {
+                    "id": 435,
+                    "url": "https:\/\/services.broki.in\/storage\/435\/IMG-20210719-WA0003.jpg"
+                },
+                {
+                    "id": 436,
+                    "url": "https:\/\/services.broki.in\/storage\/436\/IMG-20210719-WA0021.jpg"
+                },
+                {
+                    "id": 437,
+                    "url": "https:\/\/services.broki.in\/storage\/437\/IMG-20240518-WA0005.jpg"
+                },
+                {
+                    "id": 438,
+                    "url": "https:\/\/services.broki.in\/storage\/438\/IMG-20210719-WA0014.jpg"
+                },
+                {
+                    "id": 439,
+                    "url": "https:\/\/services.broki.in\/storage\/439\/IMG-20210719-WA0006.jpg"
+                },
+                {
+                    "id": 440,
+                    "url": "https:\/\/services.broki.in\/storage\/440\/IMG-20210719-WA0016.jpg"
+                },
+                {
+                    "id": 441,
+                    "url": "https:\/\/services.broki.in\/storage\/441\/IMG-20210719-WA0012.jpg"
+                },
+                {
+                    "id": 442,
+                    "url": "https:\/\/services.broki.in\/storage\/442\/IMG-20210719-WA0019.jpg"
+                },
+                {
+                    "id": 443,
+                    "url": "https:\/\/services.broki.in\/storage\/443\/IMG-20210719-WA0015.jpg"
+                },
+                {
+                    "id": 444,
+                    "url": "https:\/\/services.broki.in\/storage\/444\/IMG-20240509-WA0000.jpg"
+                },
+                {
+                    "id": 445,
+                    "url": "https:\/\/services.broki.in\/storage\/445\/IMG-20210719-WA0007.jpg"
+                },
+                {
+                    "id": 446,
+                    "url": "https:\/\/services.broki.in\/storage\/446\/IMG-20210719-WA0004.jpg"
+                },
+                {
+                    "id": 447,
+                    "url": "https:\/\/services.broki.in\/storage\/447\/IMG-20210719-WA0008.jpg"
+                },
+                {
+                    "id": 448,
+                    "url": "https:\/\/services.broki.in\/storage\/448\/IMG-20210719-WA0005.jpg"
+                }
+            ],
+            "total_review": 0,
+            "total_rating": 0,
+            "is_favourite": 0,
+            "service_address_mapping": [
+                {
+                    "id": 921,
+                    "service_id": 124,
+                    "provider_address_id": 34,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 34,
+                        "provider_id": 64,
+                        "address": "New Delhi",
+                        "latitude": "28.6139298",
+                        "longitude": "77.2088282",
+                        "status": 1,
+                        "created_at": "2024-11-29T02:31:53.000000Z",
+                        "updated_at": "2024-11-29T02:31:53.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 922,
+                    "service_id": 124,
+                    "provider_address_id": 35,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 35,
+                        "provider_id": 64,
+                        "address": "Gurugram",
+                        "latitude": "28.4594965",
+                        "longitude": "77.0266383",
+                        "status": 1,
+                        "created_at": "2024-11-29T02:43:17.000000Z",
+                        "updated_at": "2024-11-29T02:43:17.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 923,
+                    "service_id": 124,
+                    "provider_address_id": 36,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 36,
+                        "provider_id": 64,
+                        "address": "Noida",
+                        "latitude": "28.5355161",
+                        "longitude": "77.3910265",
+                        "status": 1,
+                        "created_at": "2024-11-29T02:43:31.000000Z",
+                        "updated_at": "2024-11-29T04:07:15.000000Z",
+                        "deleted_at": null
+                    }
+                },
+                {
+                    "id": 924,
+                    "service_id": 124,
+                    "provider_address_id": 38,
+                    "created_at": null,
+                    "updated_at": null,
+                    "provider_address_mapping": {
+                        "id": 38,
+                        "provider_id": 64,
+                        "address": "Faridabad",
+                        "latitude": "28.4089123",
+                        "longitude": "77.3177894",
+                        "status": 1,
+                        "created_at": "2024-11-29T04:07:57.000000Z",
+                        "updated_at": "2024-11-29T04:07:57.000000Z",
+                        "deleted_at": null
+                    }
+                }
+            ],
+            "attchment_extension": true,
+            "deleted_at": null,
+            "is_slot": 0,
+            "slots": [
+                {
+                    "day": "mon",
+                    "slot": []
+                },
+                {
+                    "day": "tue",
+                    "slot": []
+                },
+                {
+                    "day": "wed",
+                    "slot": []
+                },
+                {
+                    "day": "thu",
+                    "slot": []
+                },
+                {
+                    "day": "fri",
+                    "slot": []
+                },
+                {
+                    "day": "sat",
+                    "slot": []
+                },
+                {
+                    "day": "sun",
+                    "slot": []
+                }
+            ],
+            "visit_type": "ON_SITE",
+            "is_enable_advance_payment": 1,
+            "advance_payment_amount": 20,
+            "moq": 20
+        }
+    ],
+    "user_services": null,
+    "max": 40000,
+    "min": 5000
+}

@@ -10,29 +10,25 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Service,Property, Category, City
+from .models import Property, Category, City, Service
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 import django_filters
 from rest_framework.pagination import PageNumberPagination
-
-
-
 from django.core.paginator import Paginator
-
-
+from .pagination import CustomPagination
 
 from .serializers import (
     SendOTPSerializer,
     VerifyOTPSerializer,
     RegisterUserSerializer,
     OutletFormSerializer, 
-    ServiceSerializer,
     PropertySerializer,
     CategorySerializer,
     CitySerializer,
     PropertyDetailSerializer,
+    ServiceSerializer,
 
 )
 
@@ -142,8 +138,6 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 class AuthStatusView(APIView):
     authentication_classes = [JWTAuthentication]  # Enable JWT authentication
@@ -160,16 +154,6 @@ class AuthStatusView(APIView):
             })
         else:
             return Response({"is_authenticated": False})
-
-#Servive page
-class ServiceListAPIView(ListAPIView):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
-
-class ServiceDetailAPIView(RetrieveAPIView):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
-    lookup_field = 'slug'
 
 # ✅ Inline PropertyFilter (no extra file)
 class PropertyFilter(FilterSet):
@@ -249,6 +233,7 @@ class PropertyDetailAPIView(APIView):
         serializer = PropertyDetailSerializer(property)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class NearbyPropertiesView(ListAPIView):
     serializer_class = PropertySerializer
 
@@ -273,3 +258,15 @@ class NearbyPropertiesView(ListAPIView):
 
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+class ServiceListAPIView(ListAPIView):
+    serializer_class = ServiceSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        status = self.request.query_params.get("status")
+        queryset = Service.objects.all()
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        return queryset
+

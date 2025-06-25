@@ -15,26 +15,6 @@ class OutletForm(models.Model):
     def __str__(self):
         return f"{self.name} - {self.email}"
 
-class Service(models.Model):
-    title = models.CharField(max_length=200)
-    photographer = models.CharField(max_length=100)
-    category = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    per_item_price = models.DecimalField(max_digits=10, decimal_places=2)
-    location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='services/')
-    description = models.TextField()
-    featured = models.BooleanField(default=False)
-    is_onsite = models.BooleanField(default=True)
-    photos_covered = models.IntegerField(default=0)  # "15 items covered"
-    slug = models.SlugField(unique=True, blank=True)
-    # any additional fields like props, add-ons, etc.
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
 # from django.contrib.auth.models import User
 
 class Category(models.Model):
@@ -125,47 +105,45 @@ class PropertyAmenity(models.Model):
 #     def __str__(self):
 #         return f"{self.user.username} - {self.property.name}"
 
+class ServiceCategory(models.Model):
+    name = models.CharField(max_length=100)
 
+class ServiceSubCategory(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
 
+class Provider(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.URLField()
 
+class Attachment(models.Model):
+    url = models.URLField()
 
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(ServiceCategory, on_delete=models.SET_NULL, null=True)
+    subcategory = models.ForeignKey(ServiceSubCategory, on_delete=models.SET_NULL, null=True)
+    provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    type = models.CharField(max_length=20)
+    discount = models.DecimalField(max_digits=5, decimal_places=2)
+    duration = models.TimeField()
+    status = models.IntegerField(default=1)
+    description = models.TextField()
+    is_featured = models.BooleanField(default=False)
+    city_id = models.IntegerField()
+    attchments = models.ManyToManyField(Attachment)
+    total_review = models.IntegerField(default=0)
+    total_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    is_favourite = models.BooleanField(default=False)
+    attchment_extension = models.BooleanField(default=True)
+    is_slot = models.BooleanField(default=False)
+    visit_type = models.CharField(max_length=50)
+    is_enable_advance_payment = models.BooleanField(default=False)
+    advance_payment_amount = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    moq = models.IntegerField()
 
-
-# class Listing(models.Model):
-#     title = models.CharField(max_length=255)
-#     city = models.CharField(max_length=100)
-#     state = models.CharField(max_length=100)
-#     country = models.CharField(max_length=100, default='India')
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-#     area_sqft = models.PositiveIntegerField()
-#     property_type = models.CharField(max_length=100)
-#     year_built = models.IntegerField()
-#     monthly_sales = models.DecimalField(max_digits=10, decimal_places=2)
-#     current_rental = models.DecimalField(max_digits=10, decimal_places=2)
-#     age_of_property = models.CharField(max_length=100)
-#     features = models.TextField(blank=True)
-#     slug = models.SlugField(unique=True, blank=True)
-#     location = models.CharField(max_length=100) 
-#     thumbnail = models.ImageField(upload_to='listing_thumbs/')
-
-#     def __str__(self):
-#         return self.title
-
-#     # Optional: helper to get features as list
-#     def get_features(self):
-#         try:
-#             return json.loads(self.features)
-#         except json.JSONDecodeError:
-#             return []
-    
-#     def save(self, *args, **kwargs):
-#         if not self.slug:
-#             self.slug = slugify(self.title)
-#         super().save(*args, **kwargs)
-
-#     def get_lat_lng(self):
-#         try:
-#             lat, lng = self.location.split(",")
-#             return float(lat.strip()), float(lng.strip())
-#         except ValueError:
-#             return None, None
+class Slot(models.Model):
+    day = models.CharField(max_length=10)
+    slot = models.JSONField(default=list)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='slots')

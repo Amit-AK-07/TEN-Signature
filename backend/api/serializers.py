@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from .models import OutletForm, Service, Property, Category, City, PropertyGallery, PropertyAmenity, Customer #Favorite
+from .models import OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer, Service, Attachment, Slot #Favorite
 from django.contrib.auth import get_user_model
 import re
-
 
 User = get_user_model()
 
@@ -44,10 +43,6 @@ class RegisterUserSerializer(serializers.Serializer):
             raise serializers.ValidationError("Email already registered.")
         return value
 
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -111,7 +106,44 @@ class PropertyDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+#service serializers
 
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = ['id', 'url']
+
+class SlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slot
+        fields = ['day', 'slot']
+
+class ServiceSerializer(serializers.ModelSerializer):
+    category_id = serializers.IntegerField(source='category.id', read_only=True)
+    subcategory_id = serializers.IntegerField(source='subcategory.id', read_only=True)
+    provider_id = serializers.IntegerField(source='provider.id', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
+    provider_name = serializers.CharField(source='provider.name', read_only=True)
+    provider_image = serializers.CharField(source='provider.image', read_only=True)
+    price_format = serializers.SerializerMethodField()
+    attchments = serializers.SlugRelatedField(slug_field='url', many=True, read_only=True)
+    attchments_array = AttachmentSerializer(source='attchments', many=True, read_only=True)
+    slots = SlotSerializer(many=True)
+
+    class Meta:
+        model = Service
+        fields = [
+            'id', 'name', 'category_id', 'subcategory_id', 'provider_id', 'price',
+            'price_format', 'type', 'discount', 'duration', 'status', 'description',
+            'is_featured', 'provider_name', 'provider_image', 'city_id', 'category_name',
+            'subcategory_name', 'attchments', 'attchments_array', 'total_review',
+            'total_rating', 'is_favourite', 'attchment_extension', 'slots', 'visit_type',
+            'is_enable_advance_payment', 'advance_payment_amount', 'moq'
+        ]
+
+    def get_price_format(self, obj):
+        return f"₹{obj.price:.2f}"
 
 
 
