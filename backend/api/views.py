@@ -29,6 +29,12 @@ from .serializers import (
     CitySerializer,
     PropertyDetailSerializer,
     ServiceSerializer,
+    ServiceDetailSerializer,
+    ProviderDetailSerializer,
+    ServiceFAQSerializer,
+    ServiceAddonSerializer,
+    TaxSerializer,
+    RelatedServiceMiniSerializer
 
 )
 
@@ -264,9 +270,45 @@ class ServiceListAPIView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        status = self.request.query_params.get("status")
-        queryset = Service.objects.all()
-        if status is not None:
-            queryset = queryset.filter(status=status)
+        queryset = Service.objects.filter(status=1)  # default
+        status_param = self.request.query_params.get("status")
+        if status_param is not None:
+            queryset = queryset.filter(status=status_param)
         return queryset
 
+
+#service detail view
+
+class ServiceDetailAPIView(APIView):
+    def get(self, request, id):
+        try:
+            service = Service.objects.get(id=id)
+        except Service.DoesNotExist:
+            return Response({"error": "Service not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        service_data = ServiceDetailSerializer(service).data
+        provider_data = ProviderDetailSerializer(service.provider).data
+        faqs = ServiceFAQSerializer(service.faqs.all(), many=True).data
+        addons = ServiceAddonSerializer(service.addons.all(), many=True).data
+        taxes = TaxSerializer(service.provider.taxes.all(), many=True).data
+        related = RelatedServiceMiniSerializer(
+            Service.objects.filter(category=service.category).exclude(id=service.id)[:4],
+            many=True
+        ).data
+
+        rating_data = {
+            "total_review": service.total_review,
+            "total_rating": float(service.total_rating)
+        }
+
+        return Response({
+            "service_detail": service_data,
+            "provider": provider_data,
+            "rating_data": rating_data,
+            "customer_review": [],     # Optional or add later
+            "coupon_data": [],         # Placeholder
+            "taxes": taxes,
+            "related_service": related,
+            "service_faq": faqs,
+            "serviceaddon": addons
+        })

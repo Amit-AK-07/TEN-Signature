@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer, Service, Attachment, Slot #Favorite
+from .models import OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer, Service, Attachment, Slot, ServiceFAQ, ServiceAddon, Tax, ProviderAddress, Provider
 from django.contrib.auth import get_user_model
 import re
 
@@ -144,6 +144,55 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     def get_price_format(self, obj):
         return f"₹{obj.price:.2f}"
+
+#detailed service serializer
+
+class ServiceFAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceFAQ
+        fields = ['title', 'description', 'status', 'created_at']
+
+class ServiceAddonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceAddon
+        fields = ['name', 'price', 'image', 'status']
+
+class TaxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tax
+        fields = ['title', 'type', 'value']
+
+class ProviderAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProviderAddress
+        fields = ['address', 'latitude', 'longitude', 'status']
+
+class ProviderDetailSerializer(serializers.ModelSerializer):
+    addresses = ProviderAddressSerializer(many=True)
+    taxes = TaxSerializer(many=True)
+
+    class Meta:
+        model = Provider
+        fields = ['name', 'image', 'about', 'contact_number', 'email', 'addresses', 'taxes']
+
+class RelatedServiceMiniSerializer(serializers.ModelSerializer):
+    provider_name = serializers.CharField(source='provider.name', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
+    attchments = serializers.SlugRelatedField(slug_field='url', many=True, read_only=True)
+
+    class Meta:
+        model = Service
+        fields = ['id', 'name', 'price', 'category_name', 'subcategory_name', 'provider_name', 'attchments']
+
+class ServiceDetailSerializer(ServiceSerializer):
+    slots = SlotSerializer(many=True)
+    attchments_array = AttachmentSerializer(source='attchments', many=True, read_only=True)
+    faqs = ServiceFAQSerializer(many=True, read_only=True)
+    addons = ServiceAddonSerializer(many=True, read_only=True)
+
+    class Meta(ServiceSerializer.Meta):
+        fields = ServiceSerializer.Meta.fields + ['faqs', 'addons']
 
 
 

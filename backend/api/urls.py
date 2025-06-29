@@ -13,6 +13,7 @@ from api.views import (
     PropertyDetailAPIView,
     NearbyPropertiesView,
     ServiceListAPIView,
+    ServiceDetailAPIView,
 
 )
 
@@ -30,6 +31,7 @@ urlpatterns = [
     path('property-detail/', PropertyDetailAPIView.as_view(), name='property-detail'),
     path('nearby-property-list/', NearbyPropertiesView.as_view(), name='nearby-properties'),
     path('service-list/', ServiceListAPIView.as_view()),
+    path('service-detail/<int:id>/', ServiceDetailAPIView.as_view(), name="service-detail"),
 
     #path('favorites/', FavoriteListAPIView.as_view(), name='favorite-list'),
 

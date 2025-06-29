@@ -115,6 +115,9 @@ class ServiceSubCategory(models.Model):
 class Provider(models.Model):
     name = models.CharField(max_length=100)
     image = models.URLField()
+    about = models.TextField(blank=True, null=True)
+    contact_number = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
 
 class Attachment(models.Model):
     url = models.URLField()
@@ -147,3 +150,32 @@ class Slot(models.Model):
     day = models.CharField(max_length=10)
     slot = models.JSONField(default=list)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='slots')
+
+#details page for service
+
+class ServiceFAQ(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="faqs")
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ServiceAddon(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="addons")
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.URLField(blank=True, null=True)
+    status = models.BooleanField(default=True)
+
+class ProviderAddress(models.Model):
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, related_name="addresses")
+    address = models.CharField(max_length=255)
+    latitude = models.CharField(max_length=50)
+    longitude = models.CharField(max_length=50)
+    status = models.BooleanField(default=True)
+
+class Tax(models.Model):
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, related_name="taxes")
+    title = models.CharField(max_length=100)
+    type = models.CharField(max_length=20)  # e.g., 'percent', 'fixed'
+    value = models.DecimalField(max_digits=6, decimal_places=2)
