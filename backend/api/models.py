@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 import json
+from django.utils import timezone # Added for auto_now_add/auto_now defaults
 
 class OutletForm(models.Model):
     name = models.CharField(max_length=100)
@@ -14,8 +15,6 @@ class OutletForm(models.Model):
  
     def __str__(self):
         return f"{self.name} - {self.email}"
-
-# from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -92,35 +91,97 @@ class PropertyAmenity(models.Model):
     def __str__(self):
         return f"{self.name} for {self.property.name}"
 
-
-
-
-
-
-# class Favorite(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"{self.user.username} - {self.property.name}"
-
 class ServiceCategory(models.Model):
     name = models.CharField(max_length=100)
+    image = models.URLField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
 
 class ServiceSubCategory(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
+    image = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class ProviderAddress(models.Model):
+    provider = models.ForeignKey('Provider', on_delete=models.CASCADE, related_name="addresses")
+    address = models.CharField(max_length=255)
+    latitude = models.CharField(max_length=50)
+    longitude = models.CharField(max_length=50)
+    status = models.BooleanField(default=True) 
+    created_at = models.DateTimeField(auto_now_add=True) 
+    updated_at = models.DateTimeField(auto_now=True) 
+    deleted_at = models.DateTimeField(null=True, blank=True) 
+
+    def __str__(self):
+        return f"{self.address} ({self.provider.display_name})"
 
 class Provider(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.URLField()
-    about = models.TextField(blank=True, null=True)
+
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    username = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    email = models.EmailField(unique=True)
     contact_number = models.CharField(max_length=20, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    display_name = models.CharField(max_length=255, blank=True, null=True)
+    profile_image = models.URLField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True) 
+    status = models.IntegerField(default=1) 
+    user_type = models.CharField(max_length=50, blank=True, null=True)
+    providertype_id = models.IntegerField(blank=True, null=True) 
+    providertype = models.CharField(max_length=50, blank=True, null=True)
+    is_featured = models.BooleanField(default=False) 
+    is_verify_provider = models.BooleanField(default=False) 
+    is_email_verified = models.BooleanField(default=False) 
+    is_subscribe = models.BooleanField(default=False) 
+
+    # Address and Location
+    address = models.CharField(max_length=255, blank=True, null=True)
+    country_id = models.IntegerField(blank=True, null=True) 
+    state_id = models.IntegerField(blank=True, null=True) 
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True, related_name="providers_in_city") # Now a ForeignKey to City model
+    city_name = models.CharField(max_length=100, blank=True, null=True) 
+
+    # Handyman Specific Details
+    isHandymanAvailable = models.BooleanField(default=False) 
+    designation = models.CharField(max_length=255, blank=True, null=True)
+    handymantype_id = models.IntegerField(blank=True, null=True) 
+    handyman_type = models.CharField(max_length=50, blank=True, null=True)
+    handyman_commission = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    known_languages = models.TextField(blank=True, null=True)
+    skills = models.TextField(blank=True, null=True)
+    why_choose_me = models.TextField(blank=True, null=True)
+
+    # Rating and Service Counters
+    providers_service_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    total_service_rating = models.IntegerField(default=0)
+    handyman_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    total_services_booked = models.IntegerField(default=0)
+    is_favourite = models.BooleanField(default=False) 
+
+    # Timestamps and Other Fields
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    time_zone = models.CharField(max_length=50, blank=True, null=True)
+    uid = models.CharField(max_length=255, unique=True, blank=True, null=True) # Unique ID
+    login_type = models.CharField(max_length=50, blank=True, null=True)
+    # Changed service_address_id to ForeignKey to ProviderAddress
+    service_address = models.ForeignKey(ProviderAddress, on_delete=models.SET_NULL, null=True, blank=True, related_name="providers_with_this_service_address")
+    last_notification_seen = models.DateTimeField(null=True, blank=True)
+    provider_id = models.IntegerField(blank=True, null=True) 
+
+    def __str__(self):
+        return self.display_name if self.display_name else f"{self.first_name} {self.last_name}"
 
 class Attachment(models.Model):
     url = models.URLField()
+
+    def __str__(self):
+        return self.url
 
 class Service(models.Model):
     name = models.CharField(max_length=255)
@@ -134,7 +195,6 @@ class Service(models.Model):
     status = models.IntegerField(default=1)
     description = models.TextField()
     is_featured = models.BooleanField(default=False)
-    city_id = models.IntegerField()
     attchments = models.ManyToManyField(Attachment)
     total_review = models.IntegerField(default=0)
     total_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0)
@@ -146,12 +206,16 @@ class Service(models.Model):
     advance_payment_amount = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     moq = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 class Slot(models.Model):
     day = models.CharField(max_length=10)
     slot = models.JSONField(default=list)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='slots')
 
-#details page for service
+    def __str__(self):
+        return f"{self.service.name} - {self.day}"
 
 class ServiceFAQ(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="faqs")
@@ -159,23 +223,67 @@ class ServiceFAQ(models.Model):
     description = models.TextField()
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 class ServiceAddon(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="addons")
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.URLField(blank=True, null=True)
+    serviceaddon_image = models.URLField(blank=True, null=True)
     status = models.BooleanField(default=True)
 
-class ProviderAddress(models.Model):
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, related_name="addresses")
-    address = models.CharField(max_length=255)
-    latitude = models.CharField(max_length=50)
-    longitude = models.CharField(max_length=50)
-    status = models.BooleanField(default=True)
+    def __str__(self):
+        return self.name
+
+class ServiceAddressMapping(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='service_addresses')
+    provider_address = models.ForeignKey(ProviderAddress, on_delete=models.CASCADE, related_name='service_address_mappings')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Service {self.service.name} mapped to {self.provider_address.address}"
 
 class Tax(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, related_name="taxes")
     title = models.CharField(max_length=100)
     type = models.CharField(max_length=20)  # e.g., 'percent', 'fixed'
     value = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return self.title
+
+#delay for service detail page (keeping original comment)
+class CustomerService(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    contact = models.CharField(max_length=20, blank=True, null=True)
+    profile_image = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+class ServiceReview(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="reviews")
+    customer = models.ForeignKey(CustomerService, on_delete=models.SET_NULL, null=True, related_name="reviews")
+    rating = models.PositiveSmallIntegerField()
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.service.name} by {self.customer.name if self.customer else 'Anonymous'}"
+
+class Coupon(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="coupons")
+    code = models.CharField(max_length=20, unique=True)
+    discount_type = models.CharField(max_length=10, choices=[('fixed', 'Fixed'), ('percent', 'Percent')])
+    discount_value = models.DecimalField(max_digits=6, decimal_places=2)
+    min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    expiry_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.code

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import OutletForm, Property, City, Category, PropertyGallery, PropertyAmenity, Customer, ServiceCategory, ServiceSubCategory, Provider, Attachment, Slot, Service
+from .models import OutletForm, Property, City, Category, PropertyGallery, PropertyAmenity, Customer, ServiceCategory, ServiceSubCategory, Provider, Attachment, Slot, Service, ServiceFAQ, ServiceAddon, ProviderAddress, Tax,ServiceAddressMapping,CustomerService,ServiceReview,Coupon
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from django.contrib.admin.sites import AlreadyRegistered
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin as DefaultOutstandingTokenAdmin, BlacklistedTokenAdmin as DefaultBlacklistedTokenAdmin
@@ -52,15 +52,62 @@ admin.site.register(PropertyGallery)
 admin.site.register(PropertyAmenity)
 admin.site.register(Customer)
 
-#Service models
+class AttachmentInline(admin.TabularInline):
+    model = Service.attchments.through
+    extra = 1
+
+class SlotInline(admin.TabularInline):
+    model = Slot
+    extra = 1
+
+class ServiceFAQInline(admin.TabularInline):
+    model = ServiceFAQ
+    extra = 1
+
+class ServiceAddonInline(admin.TabularInline):
+    model = ServiceAddon
+    extra = 1
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'provider', 'category', 'price', 'status', 'is_featured')
+    list_filter = ('category', 'status', 'is_featured', 'visit_type')
+    search_fields = ('name', 'description', 'provider__display_name', 'category__name', 'subcategory__name')
+    inlines = [
+        AttachmentInline,
+        SlotInline,
+        ServiceFAQInline,
+        ServiceAddonInline,
+    ]
+    fieldsets = (
+        (None, {
+            'fields': (
+                'name', 'description', 'price', 'type', 'discount', 'duration',
+                'status', 'is_featured', 'visit_type', 'is_enable_advance_payment',
+                'advance_payment_amount', 'moq', 'total_review', 'total_rating',
+                'is_favourite', 'attchment_extension',
+            )
+        }),
+        ('Relationships', {
+            'fields': ('category', 'subcategory', 'provider'),
+            'classes': ('collapse',),
+        }),
+    )
+
+# Register all specified models with the admin site
 admin.site.register(ServiceCategory)
 admin.site.register(ServiceSubCategory)
 admin.site.register(Provider)
 admin.site.register(Attachment)
 admin.site.register(Slot)
-admin.site.register(Service)
-
-
+admin.site.register(ProviderAddress)
+admin.site.register(Tax)
+admin.site.register(ServiceFAQ)
+admin.site.register(ServiceAddon)
+admin.site.register(ServiceAddressMapping)
+admin.site.register(CustomerService)
+admin.site.register(ServiceReview)
+admin.site.register(Coupon)
 
 
 

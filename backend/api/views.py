@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Property, Category, City, Service
+from .models import Property, Category, City, Service, Provider
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
@@ -34,8 +34,9 @@ from .serializers import (
     ServiceFAQSerializer,
     ServiceAddonSerializer,
     TaxSerializer,
-    RelatedServiceMiniSerializer
-
+    RelatedServiceMiniSerializer,
+    ServiceReviewSerializer,
+    CouponSerializer
 )
 
 OTP_EXPIRY_SECONDS = 300
@@ -277,36 +278,50 @@ class ServiceListAPIView(ListAPIView):
         return queryset
 
 
-#service detail view
-
 class ServiceDetailAPIView(APIView):
     def get(self, request, id):
         try:
-            service = Service.objects.get(id=id)
+            service = Service.objects.select_related(
+                'provider',        # Select related Provider data
+                'category',        # Select related ServiceCategory data
+                'subcategory'      # Select related ServiceSubCategory data
+            ).prefetch_related(
+                'faqs',            # Prefetch all related ServiceFAQ objects
+                'addons',          # Prefetch all related ServiceAddon objects
+                'reviews',         # Prefetch all related ServiceReview objects
+                'coupons',         # Prefetch all related Coupon objects
+                'provider__taxes', # Prefetch taxes related to the provider
+                'attchments',      # Prefetch attachments for the service
+                'slots',           # Prefetch slots for the service
+                'service_addresses' # IMPORTANT: Prefetch ServiceAddressMapping objects
+                                            # This is the reverse relationship from Service to ServiceAddressMapping
+            ).get(id=id)
         except Service.DoesNotExist:
             return Response({"error": "Service not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Serialize the main service data.
+        # The ServiceDetailSerializer now correctly includes 'provider' and 'service_address_mapping'
         service_data = ServiceDetailSerializer(service).data
-        provider_data = ProviderDetailSerializer(service.provider).data
+
+        # Serialize other related data (already prefetched efficiently)
         faqs = ServiceFAQSerializer(service.faqs.all(), many=True).data
         addons = ServiceAddonSerializer(service.addons.all(), many=True).data
+        service_reviews = ServiceReviewSerializer(service.reviews.all(), many=True).data
+        coupons = CouponSerializer(service.coupons.all(), many=True).data
         taxes = TaxSerializer(service.provider.taxes.all(), many=True).data
+
+        # Fetch related services (this is a separate query, which is acceptable
+        # as it's a distinct set of services not directly linked to the current one
+        # in a prefetchable way without complex custom prefetching).
         related = RelatedServiceMiniSerializer(
             Service.objects.filter(category=service.category).exclude(id=service.id)[:4],
             many=True
         ).data
-
-        rating_data = {
-            "total_review": service.total_review,
-            "total_rating": float(service.total_rating)
-        }
-
+        
         return Response({
             "service_detail": service_data,
-            "provider": provider_data,
-            "rating_data": rating_data,
-            "customer_review": [],     # Optional or add later
-            "coupon_data": [],         # Placeholder
+            "customer_review": service_reviews,
+            "coupon_data": coupons,
             "taxes": taxes,
             "related_service": related,
             "service_faq": faqs,

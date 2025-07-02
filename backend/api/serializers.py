@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer, Service, Attachment, Slot, ServiceFAQ, ServiceAddon, Tax, ProviderAddress, Provider
+from .models import (
+    OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer,
+    Service, Attachment, Slot, ServiceFAQ, ServiceAddon, Tax, ProviderAddress,
+    Provider, Coupon, ServiceReview, CustomerService, ServiceAddressMapping,ServiceCategory, ServiceSubCategory 
+)
 from django.contrib.auth import get_user_model
 import re
 
@@ -61,7 +65,7 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = [
-            'id',                      # ❗ Extra field not in your model
+            'id',
             'name',
             'category',
             'price',
@@ -76,7 +80,7 @@ class PropertySerializer(serializers.ModelSerializer):
             'advertisement_property_date',
             'city',
             'sqft',
-            ]
+        ]
 
 
 class PropertyGallerySerializer(serializers.ModelSerializer):
@@ -106,7 +110,7 @@ class PropertyDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-#service serializers
+#SERVICE SERIALIZERS
 
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -118,84 +122,137 @@ class SlotSerializer(serializers.ModelSerializer):
         model = Slot
         fields = ['day', 'slot']
 
+class ProviderAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProviderAddress
+        fields = ['id', 'provider_id', 'address', 'latitude', 'longitude', 'status', 'created_at', 'updated_at', 'deleted_at']
+
+class ProviderAddressMappingSerializer(serializers.ModelSerializer):
+    provider_address_mapping = ProviderAddressSerializer(read_only=True, source='provider_address')
+
+    class Meta:
+        model = ServiceAddressMapping
+        fields = ['id', 'service_id', 'provider_address_id', 'created_at', 'updated_at', 'provider_address_mapping']
+
+class ServiceFAQSerializer(serializers.ModelSerializer):
+    service_id = serializers.IntegerField(source='service.id', read_only=True)
+    class Meta:
+        model = ServiceFAQ
+        fields = ['id', 'title', 'description', 'status', 'service_id', 'created_at', 'updated_at']
+
+class ServiceAddonSerializer(serializers.ModelSerializer):
+    service_id = serializers.IntegerField(source='service.id', read_only=True)
+    service_name = serializers.CharField(source='service.name', read_only=True)
+
+    class Meta:
+        model = ServiceAddon
+        fields = ['id', 'name', 'service_id', 'service_name', 'price', 'status', 'serviceaddon_image']
+
+class TaxSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tax
+        fields = ['id', 'provider_id', 'title', 'type', 'value']
+
+
+class ProviderDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Provider
+        fields = [
+            'id', 'first_name', 'last_name', 'username', 'provider_id', 'status',
+            'description', 'user_type', 'email', 'contact_number', 'country_id',
+            'state_id', 'city_id', 'city_name', 'address', 'providertype_id',
+            'providertype', 'is_featured', 'display_name', 'created_at',
+            'updated_at', 'deleted_at', 'profile_image', 'time_zone', 'uid',
+            'login_type', 'service_address_id', 'last_notification_seen',
+            'providers_service_rating', 'total_service_rating', 'handyman_rating',
+            'is_verify_provider', 'isHandymanAvailable', 'designation',
+            'handymantype_id', 'handyman_type', 'handyman_commission',
+            'known_languages', 'skills', 'is_favourite', 'total_services_booked',
+            'why_choose_me', 'is_subscribe', 'is_email_verified'
+        ]
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     category_id = serializers.IntegerField(source='category.id', read_only=True)
     subcategory_id = serializers.IntegerField(source='subcategory.id', read_only=True)
     provider_id = serializers.IntegerField(source='provider.id', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
     subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
-    provider_name = serializers.CharField(source='provider.name', read_only=True)
-    provider_image = serializers.CharField(source='provider.image', read_only=True)
+    provider_name = serializers.CharField(source='provider.display_name', read_only=True)
+    provider_image = serializers.CharField(source='provider.profile_image', read_only=True)
     price_format = serializers.SerializerMethodField()
-    attchments = serializers.SlugRelatedField(slug_field='url', many=True, read_only=True)
-    attchments_array = AttachmentSerializer(source='attchments', many=True, read_only=True)
-    slots = SlotSerializer(many=True)
+    attchments = serializers.SerializerMethodField()
+    attchments_array = AttachmentSerializer(source='attchments', many=True, read_only=True) 
+    total_rating = serializers.DecimalField(max_digits=5, decimal_places=2, read_only=True)
+    slots = SlotSerializer(many=True, read_only=True)
 
     class Meta:
         model = Service
         fields = [
             'id', 'name', 'category_id', 'subcategory_id', 'provider_id', 'price',
             'price_format', 'type', 'discount', 'duration', 'status', 'description',
-            'is_featured', 'provider_name', 'provider_image', 'city_id', 'category_name',
-            'subcategory_name', 'attchments', 'attchments_array', 'total_review',
-            'total_rating', 'is_favourite', 'attchment_extension', 'slots', 'visit_type',
-            'is_enable_advance_payment', 'advance_payment_amount', 'moq'
+            'is_featured', 'provider_name', 'provider_image', 'category_name',
+            'subcategory_name', 'attchments', 'attchments_array',
+            'total_review', 'total_rating', 'is_favourite', 'attchment_extension',
+            'slots', 'visit_type', 'is_enable_advance_payment', 'advance_payment_amount', 'moq'
         ]
 
     def get_price_format(self, obj):
         return f"₹{obj.price:.2f}"
 
-#detailed service serializer
+    def get_attchments(self, obj):
+        return [attachment.url for attachment in obj.attchments.all()]
 
-class ServiceFAQSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceFAQ
-        fields = ['title', 'description', 'status', 'created_at']
 
-class ServiceAddonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceAddon
-        fields = ['name', 'price', 'image', 'status']
-
-class TaxSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tax
-        fields = ['title', 'type', 'value']
-
-class ProviderAddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProviderAddress
-        fields = ['address', 'latitude', 'longitude', 'status']
-
-class ProviderDetailSerializer(serializers.ModelSerializer):
-    addresses = ProviderAddressSerializer(many=True)
-    taxes = TaxSerializer(many=True)
-
-    class Meta:
-        model = Provider
-        fields = ['name', 'image', 'about', 'contact_number', 'email', 'addresses', 'taxes']
-
-class RelatedServiceMiniSerializer(serializers.ModelSerializer):
-    provider_name = serializers.CharField(source='provider.name', read_only=True)
-    category_name = serializers.CharField(source='category.name', read_only=True)
-    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
-    attchments = serializers.SlugRelatedField(slug_field='url', many=True, read_only=True)
-
-    class Meta:
-        model = Service
-        fields = ['id', 'name', 'price', 'category_name', 'subcategory_name', 'provider_name', 'attchments']
-
-class ServiceDetailSerializer(ServiceSerializer):
-    slots = SlotSerializer(many=True)
-    attchments_array = AttachmentSerializer(source='attchments', many=True, read_only=True)
-    faqs = ServiceFAQSerializer(many=True, read_only=True)
-    addons = ServiceAddonSerializer(many=True, read_only=True)
+class RelatedServiceMiniSerializer(ServiceSerializer):
+    service_address_mapping = ProviderAddressMappingSerializer(many=True, read_only=True, source='service_addresses')
 
     class Meta(ServiceSerializer.Meta):
-        fields = ServiceSerializer.Meta.fields + ['faqs', 'addons']
+        fields = [
+            'id', 'name', 'category_id', 'subcategory_id', 'provider_id', 'price',
+            'price_format', 'type', 'discount', 'duration', 'status', 'description',
+            'is_featured', 'provider_name', 'provider_image', 'category_name',
+            'subcategory_name', 'attchments', 'attchments_array',
+            'total_review', 'total_rating', 'is_favourite','service_address_mapping','attchment_extension',
+            'slots', 'visit_type', 'is_enable_advance_payment', 'advance_payment_amount', 'moq'
+        ]
 
 
+class ServiceDetailSerializer(ServiceSerializer):
+    provider = ProviderDetailSerializer(read_only=True)
+    service_address_mapping = ProviderAddressMappingSerializer(many=True, read_only=True, source='service_addresses')
+
+    class Meta(ServiceSerializer.Meta):
+        fields = ServiceSerializer.Meta.fields + ['provider', 'service_address_mapping']
 
 
+class CustomerServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerService
+        fields = ['id', 'name', 'email', 'contact', 'profile_image']
 
+class ServiceReviewSerializer(serializers.ModelSerializer):
+    customer = CustomerServiceSerializer(read_only=True)
 
+    class Meta:
+        model = ServiceReview
+        fields = ['id', 'customer', 'rating', 'comment', 'created_at']
+
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ['code', 'discount_type', 'discount_value', 'min_order_amount', 'expiry_date', 'is_active']
+
+# New serializers for ServiceCategory and ServiceSubCategory if needed for other views
+class ServiceCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCategory
+        fields = ['id', 'name', 'image']
+
+class ServiceSubCategorySerializer(serializers.ModelSerializer):
+    category = ServiceCategorySerializer(read_only=True) 
+    class Meta:
+        model = ServiceSubCategory
+        fields = ['id', 'name', 'category', 'image']
