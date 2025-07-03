@@ -6,4 +6,6 @@ __pycache__/
 cache/
 
 scripts/
+backend/api/sample_properties.json
+backend/api/upload_properties.py
 
