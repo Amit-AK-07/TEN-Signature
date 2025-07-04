@@ -2,7 +2,12 @@ import ServiceSearchForm from "./ServiceSearchForm";
 import RealEstateSearchForm from "./RealEstateSearchForm";
 import { tabss } from "../../lib/Constant";
 
-export default function SearchTabs({selectedTab,showAdvancedModal, setSelectedTab, ...props }) {
+export default function SearchTabs({
+  selectedTab,
+  showAdvancedModal,
+  setSelectedTab,
+  ...props
+}) {
   const {
     activeTab,
     setActiveTab,
@@ -23,7 +28,7 @@ export default function SearchTabs({selectedTab,showAdvancedModal, setSelectedTa
   };
 
   return (
-    <div className="bg-[#d9f4f0] rounded-xl shadow-md w-full animate-up-5">
+    <div className="bg-[#d9f4f0] rounded-xl  w-full animate-up-5 p-3">
       <div className="flex border-b border-gray-200 rounded-t-xl max-w-60 bg-white">
         {tabss.map((tab) => (
           <button
@@ -56,7 +61,6 @@ export default function SearchTabs({selectedTab,showAdvancedModal, setSelectedTa
           onSubmit={onSubmit}
         />
       )}
-      
     </div>
   );
 }

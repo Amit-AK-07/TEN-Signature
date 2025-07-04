@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 
-const SignInModal = ({ onClose, setIsLoggedIn, setUsername }) => {
+const SignInModal = ({   onClose, setIsLoggedIn  }) => {
   const [isSignIn, setIsSignIn] = useState(true);
 
   useEffect(() => {
@@ -28,6 +28,7 @@ const SignInModal = ({ onClose, setIsLoggedIn, setUsername }) => {
         className="bg-white max-w-md w-full p-8 relative font-inter shadow-lg rounded-xl"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-5 right-5 text-gray-600 hover:text-gray-900"
@@ -38,6 +39,7 @@ const SignInModal = ({ onClose, setIsLoggedIn, setUsername }) => {
 
         <h2 className="text-lg font-bold mb-6">Welcome to Broki</h2>
 
+        {/* Tabs */}
         <div className="flex space-x-8 mb-6 font-semibold text-sm text-gray-700">
           <button
             onClick={() => setIsSignIn(true)}
@@ -58,12 +60,7 @@ const SignInModal = ({ onClose, setIsLoggedIn, setUsername }) => {
         </div>
 
         {isSignIn ? (
-          <SignInForm
-            onClose={onClose}
-            setIsLoggedIn={setIsLoggedIn}
-            setUsername={setUsername}
-            switchToSignUp={() => setIsSignIn(false)}
-          />
+          <SignInForm  onClose={onClose} setIsLoggedIn={setIsLoggedIn} />
         ) : (
           <SignUpForm onClose={onClose} />
         )}

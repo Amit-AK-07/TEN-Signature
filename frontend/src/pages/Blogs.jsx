@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const blogPosts = [
@@ -48,60 +49,109 @@ const tags = [
 
 const Blogs = () => {
   return (
-    <div className="bg-gray-50 min-h-screen py-10 px-4 md:px-12 lg:px-24">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Blogs</h1>
+    <div className="bg-gray-50 min-h-screen py-10 px-4 md:px-12 lg:px-24 font-[poppins]">
+      <h1 className="text-[20px] sm:text-[30px] font-bold text-gray-900 mb-2">
+        Blogs
+      </h1>
       <p className="text-sm text-gray-500 mb-6">Home / Blogs</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Blog posts */}
+        <div className="md:col-span-2">
           {blogPosts.map((post) => (
-            <Link
+            <motion.div
               key={post.id}
-              to={`/blogs-posts-card/${post.id}`}
-              state={{ post }}
-              className="block bg-white rounded-xl overflow-hidden shadow-sm"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="mb-6"
             >
-              <div className="relative">
-                <div className="overflow-hidden">
+              <Link
+                to={`/blogs-posts-card/${post.id}`}
+                state={{ post }}
+                className="block bg-white rounded-xl overflow-hidden shadow-sm"
+              >
+                <div className="relative">
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-auto object-cover img-animattion"
+                    className="w-full h-auto object-cover"
                   />
+                  <div className="absolute bottom-[-12px] right-4 bg-white text-[#181A20] text-center shadow-md rounded-md px-2 py-1 w-15">
+                    <p className="text-[13px] text-gray-500 font-normal">
+                      {post.date.split(" ")[0]}
+                    </p>{" "}
+                    {/* Month */}
+                    <p className="text-[20px] font-semibold">
+                      {post.date.split(" ")[1]}
+                    </p>{" "}
+                    {/* Date */}
+                  </div>
                 </div>
-                <div className="absolute bottom-3 right-3 bg-white text-gray-900 text-xs font-semibold rounded p-1 text-center shadow">
-                  <p className="leading-none">{post.date}</p>
-                  <p className="leading-none text-[10px]">{post.year}</p>
+                <div className="p-4">
+                  <p className="text-xs text-gray-600 mb-1">{post.category}</p>
+                  <h2 className="text-[20px] font-bold text-gray-800 mb-1">
+                    {post.title}
+                  </h2>
+                  <p className="text-[14px] text-gray-600">
+                    {post.description}
+                  </p>
                 </div>
-              </div>
-              <div className="p-4">
-                <p className="text-xs text-gray-600 mb-1">{post.category}</p>
-                <h2 className="text-lg font-bold text-gray-800 mb-1">
-                  {post.title}
-                </h2>
-                {post.description && (
-                  <p className="text-sm text-gray-600">{post.description}</p>
-                )}
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
+
+          {/* Pagination */}
+          <div className="flex flex-col items-center mt-2 md:mt-6">
+            <div className="flex space-x-2 items-center">
+              <button className="w-8 h-8 rounded-full bg-white border text-[#181a20] flex items-center justify-center shadow">
+                &lt;
+              </button>
+              <button className="w-8 h-8 rounded-full bg-emerald-400 text-white font-semibold flex items-center justify-center shadow">
+                1
+              </button>
+              <button className="w-8 h-8 rounded-full bg-white border text-[#181a20] flex items-center justify-center shadow">
+                &gt;
+              </button>
+            </div>
+            <p className="text-sm text-[#181a20] mt-2">1–10 of 120 available</p>
+          </div>
         </div>
 
+        {/* Sidebar */}
         <aside className="space-y-6">
           {/* Categories */}
-          <div className="bg-white p-4 rounded-xl shadow-sm">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="bg-white p-4 rounded-xl shadow-sm"
+          >
+            <h3 className="text-md font-semibold text-[#181a20] mb-2">
               Categories
             </h3>
             <ul className="space-y-1 text-sm text-gray-600">
               {categories.map((cat, idx) => (
-                <li key={idx}>{cat}</li>
+                <li
+                  className="hover:text-[#26c4a0] cursor-pointer text-[#181a20]"
+                  key={idx}
+                >
+                  {cat}
+                </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
           {/* Latest Blogs */}
-          <div className="bg-white p-4 rounded-xl shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+            viewport={{ once: true }}
+            className="bg-white p-4 rounded-xl shadow-sm"
+          >
             <h3 className="text-md font-semibold text-gray-800 mb-2">
               Latest Blogs
             </h3>
@@ -113,23 +163,16 @@ const Blogs = () => {
                     state={{ post: blog }}
                     className="flex space-x-3 text-sm no-underline text-inherit"
                   >
-                    {/* <Link
-                    to={/blogs-posts-card/${blog.id}}
-                    state={{ post: blog }}
-                    className="flex space-x-3 text-sm no-underline text-inherit"
-                  > */}
-                    <div className="overflow-hidden">
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-12 h-12 object-cover rounded img-animattion"
-                      />
-                    </div>
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-12 h-12 object-cover rounded"
+                    />
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-800 line-clamp-2">
+                      <p className="font-semibold text-[#181a20] line-clamp-2 hover:text-[#26c4a0]">
                         {blog.title}
                       </p>
-                      <p className="text-gray-500 text-xs">
+                      <p className="text-gray-500 font-[system-ui] text-xs">
                         {blog.date} {blog.year}
                       </p>
                     </div>
@@ -137,41 +180,31 @@ const Blogs = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          {/* Popular Tags */}
-          <div className="bg-white p-4 rounded-xl shadow-sm">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">
+          {/* Tags */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            viewport={{ once: true }}
+            className="bg-white p-4 rounded-xl shadow-sm"
+          >
+            <h3 className="text-[15px] font-semibold text-[#181a20] mb-2">
               Popular Tags
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 ">
               {tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="text-sm border px-3 py-1 rounded-full text-gray-700"
+                  className="text-[14px] font-[system-ui] border px-3 py-1 rounded-full text-gray-700"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
         </aside>
-      </div>
-
-      {/* Pagination */}
-      <div className="flex flex-col items-center mt-8">
-        <div className="flex space-x-2 items-center">
-          <button className="w-8 h-8 rounded-full bg-white border text-gray-700 flex items-center justify-center shadow">
-            &lt;
-          </button>
-          <button className="w-8 h-8 rounded-full bg-emerald-400 text-white font-semibold flex items-center justify-center shadow">
-            1
-          </button>
-          <button className="w-8 h-8 rounded-full bg-white border text-gray-700 flex items-center justify-center shadow">
-            &gt;
-          </button>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">1–10 of 120 available</p>
       </div>
     </div>
   );

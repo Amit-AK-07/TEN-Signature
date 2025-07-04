@@ -1,215 +1,331 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NearbyListings from "../components/NearbyListings";
-import PropertyCards from "../components/PropertyCards";
 
-const ProductDetail = () => {
-  const { id } = useParams(); // Get the property ID from the URL
+import {
+  faCalendarAlt,
+  faRulerCombined,
+  faHouseUser,
+  faPhone,
+} from "@fortawesome/free-solid-svg-icons";
+
+export default function ProductDetail() {
+  const { id } = useParams();
   const [property, setProperty] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [visitType, setVisitType] = useState("In Person");
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    const fetchProperty = async () => {
-      setLoading(true); // Set loading to true before fetching
-      try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/property-detail/`, { id });
-        setProperty(response.data);
-      } catch (err) {
-        setError(err.response ? err.response.data.error : "An error occurred while fetching property details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProperty();
+    axios
+      .post("https://broki-clone-ui.onrender.com/api/property-detail/", { id })
+      .then((response) => setProperty(response.data))
+      .catch((error) => console.error("Error fetching property:", error));
   }, [id]);
 
-  // Conditional rendering states
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!property) return <div>No property data found.</div>;
-
-  // Calculate price per sqft
-  const pricePerSqft = property.sqft ? 
-    Math.round((property.property_for === 0 ? property.current_rental : property.price) / property.sqft) : 
-    0;
-
-  // Determine price display based on property type
-  const priceDisplay = property.property_for === 0 ? 
-    `${property.price_format} /Mon` : property.price_format;
-
-  const pricePerSqftDisplay = `₹${pricePerSqft.toLocaleString()} /sq ft` + 
-    (property.property_for === 0 ? '/month' : '');
+  if (!property) {
+    return <div className="text-center p-8">Loading property details...</div>;
+  }
 
   return (
     <>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
-        <nav className="text-sm text-gray-500 mb-2">
-          Home / Listings / {property.city || 'Unknown City'}
+      {/* Main Container */}
+      <div className="max-w-[1300px] mx-auto px-2 pt-8 pb-0 font-sans">
+        {/* Breadcrumb */}
+        <nav
+          className="text-sm text-gray-500 ml-5 mb-2"
+          aria-label="Breadcrumb"
+        >
+          <ol className="inline-flex items-center">
+            <li>
+              <Link to="/" className="hover:text-green-600 hover:underline">
+                Home
+              </Link>
+            </li>
+            <li>
+              <span className="mx-2">/</span>
+            </li>
+            <li>
+              <Link
+                to="/listings"
+                className="hover:text-green-600 hover:underline"
+              >
+                Listing
+              </Link>
+            </li>
+            <li>
+              <span className="mx-2">/</span>
+            </li>
+            <li aria-current="page" className="text-gray-700 font-semibold">
+              {property.city}
+            </li>
+          </ol>
         </nav>
-        
-        <header className="flex flex-col md:flex-row md:justify-between md:items-start min-h-[200px]">
-          {/* Property Title and Info */}
-          <div className="flex flex-col justify-between flex-1">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                {property.name || 'Property Name Not Available'}
-              </h1>
-              <h2 className="text-xl text-gray-700 mb-4">
-                {property.address || 'Address Not Available'}
-              </h2>
-              <div className="flex flex-wrap items-center text-sm text-gray-600 space-x-4 mb-2">
-                <span>{property.city || 'City Not Available'}</span>
-                <span className="text-[#26c4a0] font-medium">• {property.property_for === 0 ? "For Rent" : "For Sale"}</span>
-                <span>• {property.age_of_property || 'N/A'} Years Old</span>
-                <span>• {property.id || 'N/A'}</span>
-              </div>
-              <div className="flex items-center text-sm text-gray-700 space-x-4">
-                <span>🍽️ {property.category || 'N/A'}</span>
-                <span>📏 {property.sqft ? `${property.sqft.toLocaleString()} sqft` : 'N/A'}</span>
-              </div>
-            </div>
 
-            {/* Pricing for smaller screens */}
-            <div className="block md:hidden mt-4">
-              <div className="text-xl font-bold text-gray-800">{priceDisplay}</div>
-              <div className="text-sm text-gray-500">{pricePerSqftDisplay}</div>
+        {/* Title & Price */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 px-5">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {property.name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2 text-sm mt-2 text-gray-600">
+              <span>{property.city}</span>
+              <span className="border-l h-4"></span>
+              <span className="text-green-500 font-medium">● For Sale</span>
+              <span className="border-l h-4 mx-1"></span>
+              <span className="text-green-500 font-medium">
+                ● {property.age_of_property} Years Old
+              </span>
+              <span className="border-l h-4 mx-1"></span>
+              <span className="flex items-center gap-1">ID: {property.id}</span>
             </div>
           </div>
-
-          {/* Pricing for larger screens */}
-          <div className="hidden md:block text-right mt-4">
-            <div className="text-xl md:text-2xl font-bold text-gray-800">{priceDisplay}</div>
-            <div className="text-sm text-gray-500">{pricePerSqftDisplay}</div>
+          <div className="mt-4 md:mt-0 text-left md:text-right">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {property.price_format}
+            </h2>
+            {property.price && property.sqft && property.sqft > 0 && (
+              <p className="text-xs text-gray-600 font-medium">
+                ₹{Math.round(property.price / property.sqft).toLocaleString()} /
+                sqft
+              </p>
+            )}
           </div>
-        </header>
+        </div>
 
-        {/* Main Content Layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:w-2/3 w-full space-y-6">
-            {/* Property Images */}
-            <section>
-              <img src={property.property_image} alt="Main" className="rounded-lg w-full" />
-              <div className="flex gap-2 overflow-x-auto mt-2">
-                {property.gallery.map((image) => (
-                  <img key={image.id} src={image.image_url} alt={`Gallery ${image.id}`} className="rounded-md w-24 h-20 object-cover" />
+        <div className="flex justify-between items-start flex-col lg:flex-row">
+          {/* Left Column */}
+          <div className="w-full lg:w-2/3 px-4">
+            {/* Image with Thumbnails */}
+            <div className="rounded-xl border border-gray-200 mb-6 p-4 sm:p-6 mt-0 bg-white">
+              <img
+                src={selectedImage || property.property_image}
+                alt={property.name}
+                className="w-full h-[250px] sm:h-[400px] object-cover rounded-lg mb-5"
+              />
+              <div className="flex gap-3 overflow-x-auto">
+                {[
+                  property.property_image,
+                  ...property.gallery.map((img) => img.image_url),
+                ].map((imgUrl, index) => (
+                  <img
+                    key={index}
+                    src={imgUrl}
+                    alt={`thumb-${index}`}
+                    onClick={() => setSelectedImage(imgUrl)}
+                    className={`min-w-[70px] min-h-[50px] w-[50px] h-[50px] sm:w-[90px] sm:h-[10px] rounded-lg object-cover cursor-pointer border ${
+                      selectedImage === imgUrl
+                        ? "border-black"
+                        : "border-gray-300"
+                    }`}
+                  />
                 ))}
               </div>
-            </section>
+            </div>
 
-            {/* Overview Section */}
-            <section className="bg-white p-4 rounded-lg shadow flex flex-wrap justify-between">
-              <div className="flex flex-col items-center w-1/3">
-                <span className="text-sm text-gray-500">Year Built</span>
-                <span className="font-semibold">{property.age_of_property || 'N/A'}</span>
+            {/* Overview */}
+            <div className="bg-white p-6 rounded-xl shadow mb-6">
+              <h3 className="text-lg font-semibold mb-4">Overview</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex items-center gap-4 p-4 rounded-lg">
+                  <div className="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-xl bg-gray-100">
+                    <FontAwesomeIcon
+                      icon={faCalendarAlt}
+                      className="text-black"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-md text-gray-800">
+                      Year Built
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {property.age_of_property
+                        ? new Date().getFullYear() - property.age_of_property
+                        : "Not Present"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 rounded-lg">
+                  <div className="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-xl bg-gray-100">
+                    <FontAwesomeIcon
+                      icon={faRulerCombined}
+                      className="text-black"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-md text-gray-800">Sqft</p>
+                    <p className="text-sm text-gray-600">
+                      {property.sqft || "Not Present"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 rounded-lg">
+                  <div className="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-xl bg-gray-100">
+                    <FontAwesomeIcon
+                      icon={faHouseUser}
+                      className="text-black"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-md text-gray-800">
+                      Property Type
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {property.category || "Not Present"}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col items-center w-1/3">
-                <span className="text-sm text-gray-500">Sqft</span>
-                <span className="font-semibold">{property.sqft || 'N/A'}</span>
-              </div>
-              <div className="flex flex-col items-center w-1/3">
-                <span className="text-sm text-gray-500">Property Type</span>
-                <span className="font-semibold">{property.category || 'N/A'}</span>
-              </div>
-            </section>
+            </div>
 
-            {/* Property Description */}
-            <section className="bg-white p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">Property Description</h4>
-              <p className="text-sm text-gray-600 mb-4">{property.description || 'Description not available.'}</p>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><strong>Property ID:</strong> {property.id || 'N/A'}</div>
-                <div><strong>Age of Property:</strong> {property.age_of_property || 'N/A'} years</div>
-                <div><strong>Price:</strong> {property.price_format || 'N/A'}</div>
-                <div><strong>Property Type:</strong> {property.category || 'N/A'}</div>
-                <div><strong>Property Size:</strong> {property.sqft || 'N/A'} sqft</div>
-                <div><strong>Property Status:</strong> {property.status ? "Available" : "Not Available"}</div>
-                <div><strong>Monthly Sales:</strong> ₹{property.monthly_sale ? property.monthly_sale.toLocaleString() : 'N/A'}</div>
-                <div><strong>Current Rental:</strong> ₹{property.current_rental ? property.current_rental.toLocaleString() : 'N/A'}</div>
-              </div>
-            </section>
+            {/* Description */}
+            <div className="bg-white p-6 rounded-xl shadow-sm mb-6">
+              <h2 className="text-xl font-semibold mb-5">
+                Property Description
+              </h2>
+              <p className="text-gray-700 text-sm whitespace-pre-line">
+                {property.description}
+              </p>
+            </div>
 
-            {/* Address Section */}
-            <section className="bg-white p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">Address</h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <p><strong>City:</strong> {property.city || 'N/A'}</p>
-                <p><strong>State:</strong> {property.state || 'N/A'}</p>
-                <p><strong>Country:</strong> {property.country || 'N/A'}</p>
+            {/* Address */}
+            <div className="bg-white p-6 rounded-xl shadow-sm mb-6">
+              <h2 className="text-xl font-semibold mb-4">Address</h2>
+              <div className="text-sm text-gray-800 space-y-2">
+                <p>
+                  <strong>City:</strong> {property.city}
+                </p>
+                <p>
+                  <strong>State:</strong> {property.state}
+                </p>
+                <p>
+                  <strong>Country:</strong> {property.country}
+                </p>
+                <p>
+                  <strong>Full Address:</strong> {property.address}
+                </p>
               </div>
-            </section>
+            </div>
 
-            {/* Map Section */}
-            <section className="bg-white p-4 rounded-lg shadow">
+            {/* Map */}
+            <div className="mt-6 rounded-xl overflow-hidden">
               <iframe
-                src={`https://maps.google.com/maps?q=${property.latitude || 0},${property.longitude || 0}&z=15&output=embed`}
-                className="w-full h-64 rounded-lg"
                 title="Map"
+                src={`https://www.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`}
+                className="w-full h-[300px] rounded-xl border-none"
                 loading="lazy"
-                allowFullScreen
               ></iframe>
-            </section>
+            </div>
 
-            {/* Features Section */}
-            <section className="bg-white p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">Features & Amenities</h4>
-              <ul className="list-disc list-inside text-sm text-gray-600">
-                {property.amenities && property.amenities.length > 0 ? (
-                  property.amenities.map((amenity) => (
-                    <li key={amenity.id}>{amenity.name}: {amenity.value}</li>
-                  ))
-                ) : (
-                  <li>No amenities available.</li>
-                )}
-              </ul>
-            </section>
+            {/* Amenities */}
+            <div className="bg-white rounded-xl shadow-sm p-6 w-full mx-auto mt-6">
+              <h2 className="text-lg font-semibold mb-4">
+                Features & Amenities
+              </h2>
+              {property.amenities.length > 0 ? (
+                property.amenities.map((amenity, index) => (
+                  <div key={index} className="mb-2">
+                    <h3 className="font-semibold mb-1">{amenity.name}</h3>
+                    <p className="text-sm text-gray-800">{amenity.value}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-600">No amenities listed.</p>
+              )}
+            </div>
           </div>
 
           {/* Right Column */}
-          <div className="lg:w-1/3 w-full space-y-6">
-            {/* Site Visit Schedule */}
-            <section className="bg-white p-4 rounded-lg shadow">
-              <h3 className="font-semibold text-gray-900 mb-2">Schedule a Site Visit</h3>
-              <div className="flex gap-2 mb-4">
-                <button className="flex-1 py-2 bg-gray-100 rounded border border-[#181a20]">In Person</button>
-                <button className="flex-1 py-2 bg-gray-100 rounded border border-[#181a20]">Video Chat</button>
+          <div className="w-full lg:w-1/3 lg:pl-6 mt-10 lg:mt-0 px-4">
+            {/* Visit Form */}
+            <div className="bg-white border border-gray-200 p-6 mt-7 rounded-xl shadow">
+              <h3 className="text-xl font-semibold mb-4">
+                Schedule a site visit
+              </h3>
+              <h4 className="text-sm mb-5">Let us know your details</h4>
+
+              <div className="flex gap-4 mb-4">
+                {["In Person", "Video Chat"].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setVisitType(type)}
+                    className={`w-1/2 px-0 py-2 font-semibold rounded-xl border ${
+                      visitType === type
+                        ? "bg-gray-50 text-black border-black"
+                        : "bg-white text-black-100 border-gray-300"
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
-              <form className="space-y-2">
-                <input type="text" placeholder="Time" className="w-full border rounded px-3 py-2" />
-                <input type="text" placeholder="Name" className="w-full border rounded px-3 py-2" />
-                <input type="text" placeholder="Phone" className="w-full border rounded px-3 py-2" />
-                <input type="email" placeholder="Email" className="w-full border rounded px-3 py-2" />
-                <textarea placeholder="Enter Your Messages" className="w-full border rounded px-3 py-2"></textarea>
-                <button type="submit" className="w-full bg-[#26c4a0] text-white py-2 rounded hover:bg-[#1a9f85] cursor-pointer">
-                  Submit a Tour Request
+
+              <form className="space-y-4 mb-4">
+                <input
+                  placeholder="Time"
+                  className="w-full border border-gray-300 p-3 rounded-lg"
+                />
+                <input
+                  placeholder="Name"
+                  className="w-full border border-gray-300 p-3 rounded-lg"
+                />
+                <input
+                  placeholder="Phone"
+                  className="w-full border border-gray-300 p-3 rounded-lg"
+                />
+                <input
+                  placeholder="Email"
+                  className="w-full border border-gray-300 p-3 rounded-lg"
+                />
+                <textarea
+                  placeholder="Enter Your Message"
+                  className="w-full border border-gray-300 p-3 rounded-lg h-24"
+                />
+                <button
+                  type="submit"
+                  className="bg-[#26c4a0] text-white w-full py-3 rounded-lg hover:bg-[#1a9f85]"
+                >
+                  Submit a Tour Request ↗
                 </button>
               </form>
-            </section>
+            </div>
 
-            {/* Contact Information */}
-            <section className="bg-white p-4 rounded-lg shadow text-center">
-              <h4 className="font-semibold text-sm text-gray-700 mb-2">Get More Information</h4>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <img src={property.customer?.profile_image || 'https://via.placeholder.com/150'} className="w-10 h-10 bg-gray-200 rounded-full" alt="Customer" />
+            {/* Contact Info */}
+            <div className="mt-6 p-6 border border-gray-200 shadow rounded-xl bg-white w-full">
+              <h2 className="text-lg font-semibold mb-4">
+                Get More Information
+              </h2>
+              <div className="flex items-center gap-6 mb-6">
+                <img
+                  src={property.customer.profile_image}
+                  alt="Sales"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
                 <div>
-                  <p className="text-sm font-semibold">{property.customer?.display_name || 'N/A'}</p>
-                  <p className="text-xs text-gray-500">📞 {property.customer?.contact_number || 'N/A'}</p>
+                  <p className="font-semibold text-lg mb-1">
+                    {property.customer.display_name}
+                  </p>
+                  <p className="text-sm text-gray-700 flex items-center gap-1">
+                    <FontAwesomeIcon icon={faPhone} className="text-black" />{" "}
+                    {property.customer.contact_number}
+                  </p>
                 </div>
               </div>
-              <button className="w-full border rounded py-2 mt-2 hover:bg-[#181a20] hover:text-white cursor-pointer transition-all duration-300 ease-in">
-                Contact Us
+              <button className="w-full border border-black rounded-xl py-4 text-sm font-medium flex items-center justify-center gap-1 hover:bg-gray-50">
+                Contact Us ↗
               </button>
-            </section>
+            </div>
           </div>
         </div>
       </div>
 
-      <NearbyListings />
-      <PropertyCards />
+      {/* Nearby Listings - Outside container for full width */}
+      <NearbyListings
+        mode="detail"
+        city={property.city}
+        excludeId={property.id}
+      />
     </>
   );
-};
-
-export default ProductDetail;
+}

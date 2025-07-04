@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
 @import "tailwindcss";
 * {
   box-sizing: border-box;
@@ -100,5 +102,22 @@ input[type="range"]::-moz-range-thumb {
   .listing-layout-md-exact {
     display: grid;
     grid-template-columns: 1fr 3fr;
+  }
+}
+
+.fade-in-up {
+  opacity: 1;
+  transform: translateY(0px);
+  animation-name: fadeInUp;
+  animation-duration: 0.5s;
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
+@media (width: 768px) {
+  .exact-768\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }

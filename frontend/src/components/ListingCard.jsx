@@ -1,91 +1,68 @@
+import {
+  faMapMarkerAlt,
+  faRulerCombined,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot, faRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-const ListingCard = ({ data, type = "listing", viewType = "grid" }) => {
+const ListingCard = ({ property, viewType }) => {
   const navigate = useNavigate();
-  const isService = type === "service";
 
-  const handleCardClick = () => {
-    navigate(`/property/${data.id}`, {
-      state: {
-        property: {
-          title: data.name,
-          imgSrc: data.property_image,
-          priceBold: `₹${data.price}`,
-          sqft: `${data.sqft} sqft`,
-          location: data.city.name,
-          code: "",
-          age: "",
-        },
-      },
-    });
+  const handleClick = () => {
+    navigate(`/property/${property.id}`, { state: { property } });
   };
 
   return (
-    <div
-      onClick={handleCardClick}
-      className={`bg-white rounded-xl shadow overflow-hidden cursor-pointer w-full ${
-        viewType === "list" ? "flex" : ""
-      }`}
+    <motion.div
+      onClick={handleClick}
+      className="bg-white shadow rounded-lg overflow-hidden cursor-pointer transition hover:shadow-md"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      {/* Image */}
-      <div className={`relative ${viewType === "list" ? "w-[300px] max-h-48" : ""}`}>
-        <div className="overflow-hidden">
-          <img
-            src={data.property_image}
-            alt={data.name}
-            className={`img-animattion object-cover ${
-              viewType === "list" ? "w-full h-full" : "w-full h-48"
-            }`}
-          />
-        </div>
-
-        {data.premium_property && (
-          <span className="absolute top-2 left-2 bg-green-600 text-white text-[10px] font-semibold px-2 py-1 rounded">
-            FEATURED
-          </span>
-         )}
- 
-         <span className="absolute bottom-2 left-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow">
-           {data.price_format ? data.price_format : ""}
-         </span>
-       </div>
- 
-       {/* Content */}
-      <div
-        className={`p-4 border-t ${
-          viewType === "list"
-            ? "w-1/2 border-t-0 border-l flex flex-col justify-between"
-            : ""
-        }`}
-      >
-        {/* Status Badge */}
-        {(data.property_for === 0 || data.property_for === 1) && (
-          <div className="text-xs font-semibold text-white px-2 py-1 rounded bg-blue-500 w-fit mb-2">
-            {data.property_for === 1
-              ? "For Sale"
-              : "For Rent"}
-          </div>
-        )}
-
-        <h3 className="text-md font-semibold text-gray-900 mb-1">
-          {data.name}
-        </h3>
-
-        <div className="text-sm text-gray-600 flex items-center mb-2">
-          <FontAwesomeIcon icon={faLocationDot} className="mr-1 text-gray-500" />
-          {data.city.name}
-        </div>
-
-        <div className="border-t pt-3 flex items-center justify-between text-sm text-gray-700">
-          <span>Available</span>
-          <button className="text-[#181a20] font-semibold hover:underline">
-            View Details
-          </button>
+      {/* Image with price overlay */}
+      <div className="relative h-[200px] sm:h-[250px] overflow-hidden">
+        <img
+          src={property.image || "https://via.placeholder.com/300"}
+          alt={property.name}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute bottom-2 left-2 bg-white text-black text-sm font-semibold px-2 py-1 rounded">
+          {property.price}
         </div>
       </div>
-    </div>
+
+      {/* Details */}
+      <div className="p-3">
+        {/* Title */}
+        <h3 className="text-[15px] font-semibold text-gray-900 mb-1">
+          {property.name}
+        </h3>
+
+        {/* Location */}
+        <p className="text-[13px] text-gray-600 flex items-center gap-1 mb-2">
+          <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-500" />
+          {property.location || "Unknown Location"}
+        </p>
+
+        {/* Sqft */}
+        {property.sqft && (
+          <p className="text-[12px] text-gray-500 flex items-center gap-1 mb-2">
+            <FontAwesomeIcon icon={faRulerCombined} className="text-gray-500" />
+            {property.sqft} sqft
+          </p>
+        )}
+
+        {/* Divider */}
+        <hr className="my-1 border-t border-gray-200" />
+
+        {/* Type: For Rent / For Sale */}
+        <p className="text-[13px] text-gray-700 font-medium">
+          {property.type === "For Rent" ? "For Rent" : "For Sale"}
+        </p>
+      </div>
+    </motion.div>
   );
 };
 

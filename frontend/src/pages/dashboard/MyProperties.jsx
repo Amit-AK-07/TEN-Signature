@@ -10,61 +10,70 @@ export default function MyProperties() {
   const handleLogout = () => {
     console.log("Logging out...");
   };
+
   const totalItems = 25;
   const pageSize = 5;
   const totalPages = Math.ceil(totalItems / pageSize);
   const [currentPage, setCurrentPage] = useState(1);
 
   return (
-    <div className="flex">
-      <div className="">
-        <Sidebar onLogout={handleLogout} />
-      </div>
-      <div className="flex-1 px-4 md:px-15 bg-gray-100 min-h-screen">
-        <div className="py-12">
-          <h1 className="text-3xl font-bold mb-3">My Properties</h1>
+    <div className="flex w-full overflow-hidden ">
+      <Sidebar onLogout={handleLogout} />
+
+      <div className="flex-1 bg-gray-100 min-h-screen px-4 md:px-15 overflow-x-hidden">
+        <div className="py-12 mt-10">
+          <h1 className="text-3xl font-bold mb-3 ">My Properties</h1>
           <p className="text-gray-500">We are glad to see you again!</p>
         </div>
 
-        <div className=" bg-[#ffff] shadow rounded-lg p-6">
-          <div className=" rounded-lg overflow-x-auto">
-            <table className="w-full table-auto text-sm">
-              <thead className="bg-gray-100 text-gray-700 font-semibold">
-                <tr>
-                  <th className="text-left px-6 py-4 min-w-[200px]">
-                    Listing Details
-                  </th>
-                  <th className="text-left px-6 py-4 min-w-[150px]">
-                    Property For
-                  </th>
-                  <th className="text-left px-6 py-4 min-w-[150px]">Status</th>
-                  <th className="text-left px-6 py-4 min-w-[150px]">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {properties.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+          {/* ✅ Only this scrolls horizontally */}
+          <div className="w-full overflow-x-auto">
+            <div className="min-w-[00px]">
+              <table className="w-full table-auto text-sm">
+                <thead className="bg-gray-100 text-gray-700 font-semibold">
                   <tr>
-                    <td colSpan="4" className="text-gray-600 py-6">
-                      No properties listed.
-                    </td>
+                    <th className="text-left px-6 py-4">Listing Details</th>
+                    <th className="text-left px-6 py-4">Property For</th>
+                    <th className="text-left px-6 py-4">Status</th>
+                    <th className="text-left px-6 py-4">Action</th>
                   </tr>
-                ) : (
-                  properties.map((property, idx) => (
-                    <tr key={idx} className="border-b border-[#dee2e6]">
-                      <td className="px-6 py-4">{property.details}</td>
-                      <td className="px-6 py-4">{property.for}</td>
-                      <td className="px-6 py-4">{property.status}</td>
-                      <td className="px-6 py-4">
-                        <button className="text-blue-600 hover:underline">
-                          {property.action}
-                        </button>
+                </thead>
+                <tbody>
+                  {properties.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="8"
+                        className="text-center text-gray-600 py-8"
+                      >
+                        No properties listed.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    properties.map((property, idx) => (
+                      <tr key={idx} className="border-b border-gray-200">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {property.details}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {property.for}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {property.status}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button className="text-blue-600 hover:underline">
+                            {property.action}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -73,8 +82,9 @@ export default function MyProperties() {
             onPageChange={setCurrentPage}
           />
         </div>
+
         <ServicesFooter />
       </div>
-    </div>
-  );
+    </div>
+  );
 }

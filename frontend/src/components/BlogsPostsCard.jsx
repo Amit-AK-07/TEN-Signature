@@ -5,6 +5,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom"; // import Here to use the location hook
+import { motion } from "framer-motion";
+import NearbyListings from "./NearbyListings";
 
 const BlogsPostsCard = () => {
   const location = useLocation(); // use the useLocation hook to access the location object
@@ -132,72 +134,116 @@ const BlogsPostsCard = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-12 px-4 md:px-6">
-      {/* Title */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold">{blogPostsData.title}</h1>
-        <p className="text-sm text-gray-500 mt-2 text-start">
-          {blogPostsData.author} &nbsp;|&nbsp; May 27, 2025
-        </p>
-      </div>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: true }}
+      >
+        <div className="max-w-3xl mx-auto py-12 px-4 md:px-6">
+          {/* Title */}
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold">{blogPostsData.title}</h1>
+            <p className="text-sm text-gray-500 mt-2 text-start">
+              {blogPostsData.author} &nbsp;|&nbsp; May 27, 2025
+            </p>
+          </div>
 
-      {/* Image */}
-      <div className="mb-8 flex justify-center">
-        <img
-          src={blogPostsData.image}
-          alt="Blog"
-          className="rounded-lg shadow-md w-full md:w-[650px] object-cover"
-        />
-      </div>
-
-      {/* Intro Paragraphs */}
-      <div className="prose max-w-none mb-10">
-        {blogPostsData.introParagraphs?.map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
-      </div>
-
-      {/* Sections */}
-      <div className="prose max-w-none mb-12">
-        {blogPostsData.sections?.map((section, index) => (
-          <div key={index} className="mb-8">
-            <h3 className="font-semibold text-lg">{section.title}</h3>
-            {section.content?.map((text, i) => (
-              <p key={i}>{text}</p>
+          {/* Image */}
+          <div className="mb-8 flex justify-center">
+            <img
+              src={blogPostsData.image}
+              alt="Blog"
+              className="rounded-lg shadow-md w-full md:w-[650px] object-cover"
+            />
+          </div>
+          <motion.div
+            className="prose max-w-none mb-10"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            {/* Intro Paragraphs */}
+            <div className="prose max-w-none mb-10">
+              {blogPostsData.introParagraphs?.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+          {/* Sections */}
+          <motion.div
+            className="prose max-w-none mb-12"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            {blogPostsData.sections?.map((section, index) => (
+              <div key={index} className="mb-8">
+                <h3 className="font-semibold text-lg">{section.title}</h3>
+                {section.content?.map((text, i) => (
+                  <p key={i}>{text}</p>
+                ))}
+              </div>
             ))}
-          </div>
-        ))}
-      </div>
-
-      {/* Conclusion */}
-      <div className="prose max-w-none border-t pt-6 text-gray-700">
-        {blogPostsData.conclusion?.map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
-      </div>
-
-      {/* Footer Section */}
-      <div className="mt-10 flex flex-col md:flex-row justify-between items-center gap-4 border-t pt-6">
-        <div className="text-sm text-gray-600 flex items-center gap-4">
-          <span className="font-medium">Share this post:</span>
-          <div className="flex gap-2 text-gray-700">
-            <a href="#">
-              {/* <FaFacebook /> */}
-              <FontAwesomeIcon icon={faFacebook} className="text-sm ml-2" />
-            </a>
-            <a href="#">
-              <FontAwesomeIcon icon={faInstagram} className="text-sm ml-2" />
-            </a>
-            <a href="#">
-              <FontAwesomeIcon icon={faLinkedinIn} className="text-sm ml-2" />
-            </a>
-          </div>
+          </motion.div>
+          {/* Conclusion */}
+          <motion.div
+            className="prose max-w-none border-t pt-6 text-gray-700"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {blogPostsData.conclusion?.map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </motion.div>
+          {/* Footer Section */}
+          {/* <div className="flex justify-evenly"> */}
+          <motion.div
+            className="mt-10 flex flex-col md:flex-row justify-between items-center gap-4 border-t pt-6"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-sm text-gray-600 flex items-center gap-4">
+              <span className="font-medium">Share this post:</span>
+              <div className="flex gap-2 text-gray-700">
+                <a href="#">
+                  {/* <FaFacebook /> */}
+                  <FontAwesomeIcon icon={faFacebook} className="text-sm ml-2" />
+                </a>
+                <a href="#">
+                  <FontAwesomeIcon
+                    icon={faInstagram}
+                    className="text-sm ml-2"
+                  />
+                </a>
+                <a href="#">
+                  <FontAwesomeIcon
+                    icon={faLinkedinIn}
+                    className="text-sm ml-2"
+                  />
+                </a>
+              </div>
+            </div>
+            <div className="">
+              <button className="bg-[hsla(8,79%,62%,.07)] text-black px-4 py-2 rounded-full text-sm">
+                Start A Restaurant
+              </button>
+              <button className="bg-[hsla(8,79%,62%,.07)] text-black px-4 ml-5 py-2 rounded-full text-sm">
+                Cloud Kitchen
+              </button>
+            </div>
+          </motion.div>
         </div>
-        <button className="bg-[hsla(8,79%,62%,.07)] text-black px-4 py-2 rounded-full text-sm">
-          Start A Restaurant
-        </button>
-      </div>
-    </div>
+        <NearbyListings />
+      </motion.div>
+    </>
   );
 };
 

@@ -1,31 +1,33 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { filterOptions } from "../lib/Constant";
 
-const FilterSidebar = ({ filters, onChange, onReset, onSearch }) => {
+const FilterSidebar = ({ filters, onChange, onReset }) => {
   const minLimit = 0;
   const maxLimit = 10000000;
 
   const [minPrice, setMinPrice] = useState(minLimit);
   const [maxPrice, setMaxPrice] = useState(maxLimit);
 
-  const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
-
-  // Static options for Property For
-  const propertyTypes = [
-    { label: "All", value: "" },
-    { label: "Sale", value: 1 },
-    { label: "Rent", value: 0 },
-  ];
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/categories/")
-      .then((res) => setCategories(res.data.results))
-      .catch((err) => console.error("Category fetch error:", err));
+    const fetchFilterData = async () => {
+      try {
+        const [citiesRes, categoriesRes] = await Promise.all([
+          axios.get("https://broki-clone-ui.onrender.com/api/cities/"),
+          axios.get("https://broki-clone-ui.onrender.com/api/categories/"),
+        ]);
 
-    axios.get("http://localhost:8000/api/cities/")
-      .then((res) => setCities(res.data.results))
-      .catch((err) => console.error("City fetch error:", err));
+        setCities(citiesRes.data.results);
+        setCategories(categoriesRes.data.results);
+      } catch (error) {
+        console.error("Failed to load filter data:", error);
+      }
+    };
+
+    fetchFilterData();
   }, []);
 
   const handleMinChange = (e) => {
@@ -40,58 +42,38 @@ const FilterSidebar = ({ filters, onChange, onReset, onSearch }) => {
 
   return (
     <aside className="bg-gray-50 p-4 rounded-xl shadow space-y-6 sticky top-6">
+      {filterOptions.map(({ label, key, options }) => {
+        let apiOptions = options;
 
-      {/* Property For (static) */}
-      <div>
-        <label className="block font-semibold mb-2 text-gray-700">Property For</label>
-        <select
-          value={filters.property_for}
-          onChange={(e) => onChange("property_for", e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 bg-white"
-        >
-          {propertyTypes.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
+        if (key === "location" && cities.length > 0) {
+          apiOptions = ["All Locations", ...cities.map((c) => c.name)];
+        }
 
-      {/* Category (from backend) */}
-      <div>
-        <label className="block font-semibold mb-2 text-gray-700">Category</label>
-        <select
-          value={filters.category}
-          onChange={(e) => onChange("category", e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 bg-white"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        if (key === "category" && categories.length > 0) {
+          apiOptions = ["All Categories", ...categories.map((c) => c.name)];
+        }
 
-      {/* City (from backend) */}
-      <div>
-        <label className="block font-semibold mb-2 text-gray-700">City</label>
-        <select
-          value={filters.city}
-          onChange={(e) => onChange("city", e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 bg-white"
-        >
-          <option value="">All Locations</option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        return (
+          <div key={key}>
+            <label className="block font-semibold mb-2 text-gray-700">
+              {label}
+            </label>
+            <select
+              value={filters[key]}
+              onChange={(e) => onChange(key, e.target.value)}
+              className="w-full border rounded-lg px-4 py-2 bg-white"
+            >
+              {apiOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+        );
+      })}
 
-      {/* Price Range Slider */}
+      {/* Price slider */}
       <div className="relative h-10 mb-4 flex items-center">
         <div className="absolute w-full h-2 bg-gray-300 rounded-md z-0" />
         <div
@@ -123,7 +105,9 @@ const FilterSidebar = ({ filters, onChange, onReset, onSearch }) => {
 
       {/* Price Range Inputs */}
       <div>
-        <label className="block font-semibold mb-2 text-gray-700">Price Range</label>
+        <label className="block font-semibold mb-2 text-gray-700">
+          Price Range
+        </label>
         <div className="flex items-center space-x-2">
           <input
             placeholder="₹0"
@@ -141,9 +125,8 @@ const FilterSidebar = ({ filters, onChange, onReset, onSearch }) => {
         </div>
       </div>
 
-      {/* Buttons */}
       <button
-        onClick={onSearch}
+        onClick={() => {}}
         className="w-full bg-[#26c4a0] hover:bg-[#1a9f85] text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
       >
         Search

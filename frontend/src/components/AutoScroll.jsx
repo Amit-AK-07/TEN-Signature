@@ -1,9 +1,16 @@
+import { motion } from "framer-motion";
 import Marquee from "react-fast-marquee";
 import { logos } from "../lib/Constant";
 
 const AutoScroll = () => {
   return (
-    <section className="bg-white py-10 px-4 sm:px-8 md:px-16">
+    <motion.section
+      className="w-full bg-white py-10 px-8 md:px-12 lg:px-28"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      viewport={{ once: true }}
+    >
       <h2 className="text-center text-xl md:text-2xl font-semibold text-[#0f1f25] mb-8">
         Trusted by the world's best
       </h2>
@@ -30,7 +37,7 @@ const AutoScroll = () => {
           </div>
         ))}
       </Marquee>
-    </section>
+    </motion.section>
   );
 };
 

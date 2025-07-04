@@ -16,7 +16,7 @@ export default function Sidebar({ onLogout }) {
   return (
     <>
       {/* Mobile Toggle Bar - Always Visible */}
-      <div className="lg:hidden fixed top-16 left-0 w-full h-[50px] bg-white z-50 shadow flex items-center px-10">
+      <div className="lg:hidden fixed top-16 left-0 w-full h-[50px] bg-white z-30 shadow flex items-center px-10">
         <div
           className="flex items-center gap-5 cursor-pointer w-full"
           onClick={() => setIsOpen(!isOpen)}
@@ -30,7 +30,7 @@ export default function Sidebar({ onLogout }) {
       {/* Dropdown-Style Sidebar for Mobile */}
       {isOpen && (
         <>
-          <div className="lg:hidden absolute top-[115px] left-0 w-full bg-white shadow-lg p-4 space-y-6 z-40">
+          <div className="lg:hidden absolute top-[115px] left-0 w-full bg-white shadow-lg p-4 space-y-6 z-20">
             <div>
               <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">
                 Manage Listings
@@ -108,7 +108,7 @@ export default function Sidebar({ onLogout }) {
         </>
       )}
       {/* Sidebar for Desktop */}
-      <div className="hidden lg:block bg-white w-72 h-screen p-6 pt-10  flex-col justify-between">
+      <div className="hidden lg:block bg-white w-72 h-screen p-6 pt-10 flex-col justify-between">
         <div className="space-y-6">
           <div>
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">

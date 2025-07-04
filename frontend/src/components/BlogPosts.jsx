@@ -33,8 +33,10 @@ const BlogPosts = ({ post }) => {
           </div>
         </div>
         <div className="px-4 pt-4 pb-6">
-          <p className="text-sm text-gray-500 mb-1">{post.category}</p>
-          <h3 className="font-semibold text-base leading-snug">{post.title}</h3>
+          <p className="text-[13px] text-gray-500 mb-1">{post.category}</p>
+          <h3 className="font-semibold text-[15px] leading-snug">
+            {post.title}
+          </h3>
         </div>
       </Link>
     </article>

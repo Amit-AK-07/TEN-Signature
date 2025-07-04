@@ -1,10 +1,32 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { locationOptions, outletOptions } from "../lib/Constant";
 import FormImg from "../assets/images/form.webp";
 
-//  Reusable Input Component
+// Animation Variants
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const formVariants = {
+  hidden: { opacity: 0, x: 50 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const imageVariants = {
+  hidden: { opacity: 0, x: -50 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+// Reusable Text Input
 const TextInput = ({
   label,
   name,
@@ -17,7 +39,7 @@ const TextInput = ({
   <div>
     <label
       htmlFor={name}
-      className="block text-xs font-semibold text-gray-700 mb-1"
+      className="block text-[15px] font-semibold text-gray-700 mb-1"
     >
       {label}
     </label>
@@ -29,17 +51,17 @@ const TextInput = ({
       value={value}
       onChange={onChange}
       required={required}
-      className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+      className="w-full rounded-md border border-gray-300 px-4 py-3 text-[15px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
     />
   </div>
 );
 
-//  Reusable Select Component
+// Reusable Select Input
 const SelectInput = ({ label, name, value, onChange, options }) => (
   <div>
     <label
       htmlFor={name}
-      className="block text-xs font-semibold text-gray-700 mb-1"
+      className="block text-[15px] font-semibold text-gray-700 mb-1"
     >
       {label}
     </label>
@@ -49,7 +71,7 @@ const SelectInput = ({ label, name, value, onChange, options }) => (
       value={value}
       onChange={onChange}
       required
-      className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+      className="w-full rounded-md border border-gray-300 px-4 py-3 text-[15px] text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
     >
       {options.map(({ value, label }) => (
         <option key={value} value={value} disabled={value === ""}>
@@ -65,85 +87,85 @@ const Form = () => {
     name: "",
     phone: "",
     email: "",
-    outlet: "",
+    outlet_type: "", // ✅ API field
     location: "",
     brand: "",
-    budget: "",
-    size: "",
+    max_budget: "", // ✅ API field
+    min_size: "", // ✅ API field
   });
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/submit-form/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        outlet_type: formData.outlet,
-        location: formData.location,
-        brand: formData.brand,
-        max_budget: formData.budget ? parseInt(formData.budget, 10) : null,
-        min_size: formData.size ? parseInt(formData.size, 10) : null,
-      }),
-    });
+    try {
+      const response = await axios.post(
+        "https://broki-clone-ui.onrender.com/api/submit-form/",
+        formData
+      );
 
-    if (!response.ok) {
-      const error = await response.json();
-      alert("Error submitting form:\n" + JSON.stringify(error, null, 2));
-      return;
+      if (response.status === 200 || response.status === 201) {
+        setSuccessMessage("Form submitted successfully!");
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          outlet_type: "",
+          location: "",
+          brand: "",
+          max_budget: "",
+          min_size: "",
+        });
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setErrorMessage("Failed to submit the form. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-
-    const result = await response.json();
-    alert("Form submitted successfully!");
-
-    // Reset form
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      outlet: "",
-      location: "",
-      brand: "",
-      budget: "",
-      size: "",
-    });
-  } catch (error) {
-    console.error("Submission error:", error);
-    if (error instanceof Response) {
-      const errorText = await error.text();
-      console.error("Error response text:", errorText);
-    }
-    alert("An unexpected error occurred.");
-  }
-};
+  };
 
   return (
-    <div className="w-full bg-[#f7f7f7] px-4 py-8">
+    <motion.div
+      className="w-full bg-[#f7f7f7] px-4 py-8 font-[poppins] text-[15px]"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true }}
+    >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-extrabold text-gray-900 mb-1 max-md:text-center">
+        <motion.h2
+          className="text-[20px] md:text-[30px] font-extrabold text-gray-900 mb-1 max-md:text-center"
+          variants={formVariants}
+        >
           LOOKING For something specific
-        </h2>
-        <p className="text-sm text-gray-700 mb-8 max-md:text-center">
+        </motion.h2>
+        <motion.p
+          className="text-[15px] text-gray-700 mb-8 max-md:text-center"
+          variants={formVariants}
+        >
           Let us know. Our team will get it for you!
-        </p>
+        </motion.p>
 
         <div className="flex flex-col lg:flex-row lg:space-x-16 items-center">
-          {/* Form */}
-          <form
+          {/* Form section */}
+          <motion.form
             onSubmit={handleSubmit}
             className="flex-1 w-full space-y-6"
             noValidate
+            variants={formVariants}
           >
             <TextInput
               label="Your Name"
@@ -173,8 +195,8 @@ const Form = () => {
             />
             <SelectInput
               label="Outlet Type"
-              name="outlet"
-              value={formData.outlet}
+              name="outlet_type" // ✅ API field
+              value={formData.outlet_type}
               onChange={handleChange}
               options={outletOptions}
             />
@@ -196,8 +218,8 @@ const Form = () => {
               <div className="w-full md:w-1/2">
                 <TextInput
                   label="Max Budget"
-                  name="budget"
-                  value={formData.budget}
+                  name="max_budget" // ✅ API field
+                  value={formData.max_budget}
                   onChange={handleChange}
                   placeholder="Budget"
                 />
@@ -205,28 +227,51 @@ const Form = () => {
               <div className="w-full md:w-1/2">
                 <TextInput
                   label="Min Size (Sq ft)"
-                  name="size"
-                  value={formData.size}
+                  name="min_size" // ✅ API field
+                  value={formData.min_size}
                   onChange={handleChange}
                   placeholder="Area Required"
                 />
               </div>
             </div>
-
             <button
               type="submit"
-              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-md text-center flex items-center justify-center space-x-2"
+              disabled={loading}
+              className={`w-full ${
+                loading ? "bg-teal-400" : "bg-teal-500 hover:bg-teal-600"
+              } text-white font-semibold py-3 rounded-md text-center flex items-center justify-center space-x-2 cursor-pointer`}
             >
-              <span>Submit</span>
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="text-sm"
-              />
+              {loading ? (
+                <span>Submitting...</span>
+              ) : (
+                <>
+                  <span>Submit</span>
+                  <FontAwesomeIcon
+                    icon={faArrowUpRightFromSquare}
+                    className="text-sm"
+                  />
+                </>
+              )}
             </button>
-          </form>
 
-          {/* Image */}
-          <div className="flex-1 mt-12 lg:mt-0 flex justify-center items-center">
+            {/* Success and Error messages */}
+            {successMessage && (
+              <p className="text-green-600 text-sm font-medium mt-2">
+                {successMessage}
+              </p>
+            )}
+            {errorMessage && (
+              <p className="text-red-600 text-sm font-medium mt-2">
+                {errorMessage}
+              </p>
+            )}
+          </motion.form>
+
+          {/* Image section */}
+          <motion.div
+            className="flex-1 mt-12 lg:mt-0 flex justify-center items-center"
+            variants={imageVariants}
+          >
             <img
               src={FormImg}
               alt="Man with headset illustration"
@@ -234,10 +279,10 @@ const Form = () => {
               width="600"
               height="400"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

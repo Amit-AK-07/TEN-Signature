@@ -12,7 +12,7 @@ export default function RealEstateSearchForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-wrap lg:flex-nowrap items-center gap-4 p-6 rounded-b-xl bg-white"
+      className="flex flex-wrap lg:flex-nowrap items-center gap-4 p-6  rounded-b-xl bg-white"
     >
       <select
         value={selectedCity}

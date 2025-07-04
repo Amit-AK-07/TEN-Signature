@@ -1,50 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { servicesData } from "../lib/Constant";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { FaRegCalendarAlt } from "react-icons/fa";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
-// import servicesData from "../../components/listings/Constant";
-
- function ServicesBooking() {
+function ServicesBooking() {
   const location = useLocation();
-  const serviceId = location?.state?.serviceId;
-
-  const serviceData = servicesData.find(
-    (service) => service.serviceId === serviceId
-  );
-
-//   if (!serviceData) {
-//     return (
-//       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-6 mt-4 text-center">
-//         <h2 className="text-xl font-semibold mb-4">No service selected</h2>
-//         <p>Please go back and select a service to book.</p>
-//       </div>
-//     );
-//   }
 
   const {
-    name,
-    category,
-    price,
-    images = [],
+    serviceData = {}, // fallback if undefined
     selectedAddOns = [],
+    addOnsTotal = 0,
+    tax = 0,
+    totalPrice = 0,
+  } = location?.state || {};
+
+  if (!serviceData.name) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        ❌ Service details not found.
+      </div>
+    );
+  }
+
+  const {
+    name = "Unknown Service",
+    category_name = "Unknown Category",
+    price = 0,
+    attchments = [],
   } = serviceData;
 
-  const mainImage = images?.[0] || "https://via.placeholder.com/80";
+  const mainImage =
+    attchments?.length > 0 ? attchments[0] : "https://via.placeholder.com/300";
 
-  const [locationInput, setLocationInput] = React.useState("");
-  const [dateTime, setDateTime] = React.useState("");
+  const [locationInput, setLocationInput] = useState("");
+  const [dateTime, setDateTime] = useState("");
 
-  const addOnsTotal = selectedAddOns.reduce(
-    (acc, addOn) => acc + (addOn.price || 0),
-    0
-  );
-
-  const subtotal = price + addOnsTotal;
-  const tax = +(price * 0.18).toFixed(2);
-  const totalPrice = +(subtotal + tax).toFixed(2);
-  const advancePayment = +(totalPrice * 0.2).toFixed(2);
+  const subtotal = Number(price) + Number(addOnsTotal);
+  const calculatedTax = +(subtotal * 0.18).toFixed(2);
+  const calculatedTotal = +((subtotal || 0) + (calculatedTax || 0)).toFixed(2);
+  const advancePayment = +(calculatedTotal * 0.2).toFixed(2);
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -65,28 +59,33 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white p-6 mt-4 rounded-xl">
+    <div className="max-w-6xl mx-auto bg-white p-4 sm:p-6 mt-4 rounded-xl">
       {/* Header */}
-      <div className="flex items-center bg-gray-50 gap-6 mb-6 p-6 border border-gray-300 rounded-lg">
-        <div className="p-0 bg-white rounded-sm shrink-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center bg-gray-50 gap-4 sm:gap-6 mb-6 p-4 sm:p-6 border border-gray-300 rounded-lg">
+        <div className="bg-white rounded-sm shrink-0">
           <img
             src={mainImage}
             alt={name}
-            className="w-25 h-25 object-cover rounded-sm"
+            className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm "
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/300";
+            }}
           />
         </div>
-        <div className="flex-1 flex flex-col justify-center">
-          <h2 className="text-xl font-bold">Food Photography by {name}</h2>
-          <p className="text-gray-500 text-sm">Category: {category}</p>
+        <div className="flex-1">
+          <h2 className="text-xl font-bold">{name}</h2>
+          <p className="text-gray-500 text-sm">Category: {category_name}</p>
         </div>
-        <div className="ml-auto text-[#26c4a0] font-bold text-xl">
+        <div className="text-[#26c4a0] font-bold text-xl sm:ml-auto">
           ₹{price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </div>
       </div>
+
       {/* Main Section */}
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Schedule Section */}
-        <section className="md:flex-1 bg-white rounded-xl p-6 border border-gray-300 shadow self-start">
+        <section className="w-full lg:flex-1 bg-white rounded-xl p-4 border border-gray-300 shadow">
           <h3 className="text-lg font-semibold mb-4">Schedule Service</h3>
 
           <div className="mb-4">
@@ -104,9 +103,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
                 onChange={(e) => setDateTime(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-3 text-sm pr-10 focus:outline-teal-600 focus:ring-1 focus:ring-teal-600"
               />
-              {/* <FaRegCalendarAlt className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" /> */}
               <FontAwesomeIcon
-                icon={["fas", "calendar-alt"]}
+                icon={faCalendarAlt}
                 className="absolute right-3 top-3.5 text-gray-400 pointer-events-none"
               />
             </div>
@@ -132,14 +130,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
           <button
             type="button"
             onClick={handleUseCurrentLocation}
-            className="inline-block bg-[#26c4a0] hover:bg-[#26c4a0] text-white font-semibold px-6 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-700"
+            className="w-full sm:w-auto bg-[#26c4a0] hover:bg-[#1aa68c] text-white font-semibold px-6 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-700"
           >
             Use Current Location
           </button>
         </section>
 
         {/* Price Details */}
-        <section className="w-full md:w-[340px] bg-white rounded-xl p-6 border border-gray-300 shadow">
+        <section className="w-full lg:w-[340px] bg-white rounded-xl p-4 border border-gray-300 shadow">
           <h3 className="text-lg font-semibold mb-4">Price Details</h3>
           <div className="text-sm text-gray-700 space-y-2 mb-4">
             <div className="flex justify-between">
@@ -158,20 +156,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
               </span>
             </div>
             <div className="flex justify-between">
-              <span>Coupon Discount:</span>
-              <span className="text-red-500">Not Applied</span>
-            </div>
-            <div className="flex justify-between">
-              <span>GST (18% on base price):</span>
+              <span>GST (18%):</span>
               <span className="text-blue-600">
-                +₹{tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                +₹
+                {calculatedTax.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
               </span>
             </div>
           </div>
-
-          <button className="w-full border border-[#26c4a0] text-[#26c4a0] font-semibold py-2 rounded-lg hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-600 mb-4">
-            Apply Coupon
-          </button>
 
           <hr className="my-4" />
 
@@ -179,7 +172,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
             <span>Total:</span>
             <span>
               ₹
-              {totalPrice.toLocaleString(undefined, {
+              {calculatedTotal.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
             </span>
@@ -190,14 +183,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
               minimumFractionDigits: 2,
             })}
           </div>
-          <button className="w-full bg-[#26c4a0] hover:bg-[#26c4a0] text-white font-semibold py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700">
+          <button className="w-full bg-[#26c4a0] hover:bg-[#1aa68c] text-white font-semibold py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700">
             Pay Advance
           </button>
         </section>
       </div>
-         
     </div>
   );
 }
 
-export  default ServicesBooking;
+export default ServicesBooking;

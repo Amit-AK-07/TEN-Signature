@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
-  faBolt,
-  faUserCircle,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { servicesData } from "../lib/Constant";
+import ServiceCard from "../components/ServicesPage/ServiceCard"; // 👈 Import ServiceCard
 
 const Services = () => {
   const [cards, setCards] = useState([]);
@@ -18,19 +17,31 @@ const Services = () => {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    setCards(servicesData);
+    axios
+      .get("https://broki-clone-ui.onrender.com/api/service-list/")
+      .then((response) => {
+        console.log("API Response:", response.data);
+        if (response.data && Array.isArray(response.data.data)) {
+          setCards(response.data.data);
+        } else {
+          console.error("Unexpected API response format:", response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+      });
   }, []);
 
   const sortedCards = [...cards].sort((a, b) => {
     switch (sortOption) {
       case "Price Low":
-        return a.price - b.price;
+        return parseFloat(a.price) - parseFloat(b.price);
       case "Price High":
-        return b.price - a.price;
+        return parseFloat(b.price) - parseFloat(a.price);
       case "Category A-Z":
-        return a.category.localeCompare(b.category);
+        return a.category_name.localeCompare(b.category_name);
       case "Category Z-A":
-        return b.category.localeCompare(a.category);
+        return b.category_name.localeCompare(a.category_name);
       default:
         return 0;
     }
@@ -45,10 +56,10 @@ const Services = () => {
   return (
     <div className="max-w-[1300px] mx-auto px-2 sm:px-4 py-10">
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-left">
+        <h1 className="text-[30px] sm:text-[36px] font-semibold text-left font-[poppins]">
           Professional Food Photography for Your F&B Business
         </h1>
-        <div className="text-sm text-black-600 mt-5">
+        <div className="text-sm text-black-600 mt-5 font-[poppins]">
           <Link to="/" className="text-black-600 hover:text-[#26c4a0]">
             Home
           </Link>{" "}
@@ -67,8 +78,6 @@ const Services = () => {
               className="appearance-none bg-transparent pl-2 pr-1 py-1 font-medium text-black focus:outline-none"
             >
               <option>Newest</option>
-              <option>Best Seller</option>
-              <option>Best Match</option>
               <option>Price Low</option>
               <option>Price High</option>
               <option>Category A-Z</option>
@@ -112,62 +121,7 @@ const Services = () => {
         }`}
       >
         {paginatedCards.map((card) => (
-          <div
-            key={card.serviceId}
-            className={`bg-white shadow-md rounded-xl overflow-hidden ${
-              view === "list" ? "flex" : "flex flex-col"
-            }`}
-          >
-            <div className="relative group overflow-hidden">
-              <img
-                src={card.image}
-                alt={card.name}
-                className={` img-animattion ${
-                  view === "list"
-                    ? "w-100 h-52 object-cover group-hover:scale-105"
-                    : "w-full h-56 object-cover group-hover:scale-105"
-                }`}
-              />
-              <div className="absolute top-4 left-4 bg-[#26c4a0] text-white text-xs font-bold px-2 py-2 rounded flex items-center gap-1 shadow transition-all duration-300 ease-in-out group-hover:translate-y-full group-hover:opacity-0">
-                <FontAwesomeIcon icon={faBolt} className="w-3.5 h-3.5" />
-                FEATURED
-              </div>
-              <div className="absolute bottom-2 left-2 bg-white text-black text-sm font-semibold px-3 py-1 rounded shadow">
-                ₹{card.price} /item
-              </div>
-            </div>
-
-            <div className="p-4 flex flex-col justify-between gap-2 w-full">
-              <div>
-                <h3 className="text-base font-semibold text-gray-900">
-                  <Link
-                    to={`/services/${card.serviceId}`}
-                    className="text-sm font-semibold text-black hover:text-[#26c4a0] hover:underline"
-                  >
-                    Food Photography by {card.name}
-                  </Link>
-                </h3>
-                <div className="flex items-center text-sm text-gray-500 gap-2 mt-1">
-                  <span className="flex items-center gap-1">
-                    <FontAwesomeIcon icon={faUserCircle} className="w-4 h-4" />
-                    {card.name}
-                  </span>
-                  <span className="mx-1">•</span>
-                  <span>{card.category}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-300 pt-2 flex justify-between items-center text-sm text-gray-700">
-                <span>On-Site Service</span>
-                <Link
-                  to={`/services/${card.serviceId}`}
-                  className="text-sm font-semibold text-black hover:text-[]"
-                >
-                  Book Now
-                </Link>
-              </div>
-            </div>
-          </div>
+          <ServiceCard key={card.id} card={card} view={view} />
         ))}
       </div>
 

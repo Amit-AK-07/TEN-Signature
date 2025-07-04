@@ -1,6 +1,11 @@
-import { faObjectGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMapMarkerAlt,
+  faRulerCombined,
+  faBolt,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const PropertyCard = ({ property }) => {
   const navigate = useNavigate();
@@ -10,31 +15,65 @@ const PropertyCard = ({ property }) => {
   };
 
   return (
-    <div
+    <motion.div
       onClick={handleClick}
-      className="bg-white shadow-md rounded-lg cursor-pointer"
+      className="bg-white shadow rounded-lg overflow-hidden cursor-pointer transition hover:shadow-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      <div className="overflow-hidden rounded-t-lg">
+      {/* Image with badges */}
+      <div className="relative h-[200px] sm:h-[250px] overflow-hidden">
         <img
-          className="w-full h-[230px] object-cover rounded-lg img-animattion"
-          src={property.imgSrc}
-          alt={property.imgAlt}
+          src={property.image || "https://via.placeholder.com/300"}
+          alt={property.name}
+          className="w-full h-full object-cover"
         />
-      </div>
-      <div className="p-4">
-        <div className="mt-4 text-base leading-5 text-gray-900 font-semibold">
-          <span className="font-extrabold">{property.priceBold}</span>
-          <span className="font-normal italic"> {property.priceNormal}</span>
+
+        {/* Featured Badge */}
+        {property.is_featured && (
+          <div className="absolute top-2 left-2 bg-[#26c4a0] text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1 shadow">
+            <FontAwesomeIcon icon={faBolt} className="w-3.5 h-3.5" />
+            FEATURED
+          </div>
+        )}
+
+        {/* Price Badge */}
+        <div className="absolute bottom-2 left-2 bg-white text-black text-sm font-semibold px-2 py-1 rounded shadow">
+          {property.price}
         </div>
-        <h3 className="mt-1 font-semibold text-gray-900 text-base leading-5">
-          {property.title}
+      </div>
+
+      {/* Details */}
+      <div className="p-3">
+        {/* Title */}
+        <h3 className="text-[15px] font-semibold text-gray-900 mb-1 truncate">
+          {property.name}
         </h3>
-        <p className="mt-2 text-sm text-gray-900 flex items-center gap-2 font-normal">
-          <FontAwesomeIcon icon={faObjectGroup} />
-          {property.sqft}
+
+        {/* Location */}
+        <p className="text-[13px] text-gray-600 flex items-center gap-1 mb-2">
+          <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-500" />
+          {property.location || "Unknown Location"}
+        </p>
+
+        {/* Sqft */}
+        {property.sqft && (
+          <p className="text-[12px] text-gray-500 flex items-center gap-1 mb-2">
+            <FontAwesomeIcon icon={faRulerCombined} className="text-gray-500" />
+            {property.sqft} sqft
+          </p>
+        )}
+
+        {/* Divider */}
+        <hr className="my-1 border-t border-gray-200" />
+
+        {/* Sale Type */}
+        <p className="text-[13px] text-gray-700 font-medium">
+          {property.type === "For Rent" ? "For Rent" : "For Sale"}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
