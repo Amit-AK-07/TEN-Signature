@@ -36,7 +36,8 @@ from .serializers import (
     TaxSerializer,
     RelatedServiceMiniSerializer,
     ServiceReviewSerializer,
-    CouponSerializer
+    CouponSerializer,
+    ContactFormSerializer
 )
 
 OTP_EXPIRY_SECONDS = 300
@@ -327,3 +328,11 @@ class ServiceDetailAPIView(APIView):
             "service_faq": faqs,
             "serviceaddon": addons
         })
+
+@api_view(['POST'])
+def submit_contact_form(request):
+    serializer = ContactFormSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Contact form submitted successfully!'})
+    return Response(serializer.errors, status=400)

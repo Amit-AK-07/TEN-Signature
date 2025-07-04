@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer,
     Service, Attachment, Slot, ServiceFAQ, ServiceAddon, Tax, ProviderAddress,
-    Provider, Coupon, ServiceReview, CustomerService, ServiceAddressMapping,ServiceCategory, ServiceSubCategory 
+    Provider, Coupon, ServiceReview, CustomerService, ServiceAddressMapping,ServiceCategory, ServiceSubCategory,ContactForm 
 )
 from django.contrib.auth import get_user_model
 import re
@@ -256,3 +256,8 @@ class ServiceSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceSubCategory
         fields = ['id', 'name', 'category', 'image']
+
+class ContactFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactForm
+        fields = ['name', 'phone', 'email', 'outlet_type', 'location', 'brand_name']

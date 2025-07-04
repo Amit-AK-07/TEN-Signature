@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import OutletForm, Property, City, Category, PropertyGallery, PropertyAmenity, Customer, ServiceCategory, ServiceSubCategory, Provider, Attachment, Slot, Service, ServiceFAQ, ServiceAddon, ProviderAddress, Tax,ServiceAddressMapping,CustomerService,ServiceReview,Coupon
+from .models import OutletForm, Property, City, Category, PropertyGallery, PropertyAmenity, Customer, ServiceCategory, ServiceSubCategory, Provider, Attachment, Slot, Service, ServiceFAQ, ServiceAddon, ProviderAddress, Tax,ServiceAddressMapping,CustomerService,ServiceReview,Coupon,ContactForm
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from django.contrib.admin.sites import AlreadyRegistered
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin as DefaultOutstandingTokenAdmin, BlacklistedTokenAdmin as DefaultBlacklistedTokenAdmin
@@ -108,6 +108,8 @@ admin.site.register(ServiceAddressMapping)
 admin.site.register(CustomerService)
 admin.site.register(ServiceReview)
 admin.site.register(Coupon)
+admin.site.register(ContactForm)
+
 
 
 
