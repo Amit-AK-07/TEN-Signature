@@ -8,4 +8,5 @@ cache/
 scripts/
 sample_properties.json
 upload_properties.py
-
+import_blog_data.py
+blog_data.json

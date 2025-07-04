@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Property, Category, City, Service, Provider
+from .models import Property, Category, City, Service, Provider,Blog, Tag
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
@@ -37,7 +37,9 @@ from .serializers import (
     RelatedServiceMiniSerializer,
     ServiceReviewSerializer,
     CouponSerializer,
-    ContactFormSerializer
+    ContactFormSerializer,
+    BlogSerializer,
+    TagSerializer
 )
 
 OTP_EXPIRY_SECONDS = 300
@@ -336,3 +338,50 @@ def submit_contact_form(request):
         serializer.save()
         return Response({'message': 'Contact form submitted successfully!'})
     return Response(serializer.errors, status=400)
+
+# ✅ BLOG LIST with PAGINATION and Broki Format
+class BlogListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        page = int(request.GET.get("page", 1))
+        per_page = 10
+
+        blogs = Blog.objects.filter(status=1).order_by('-created_at')
+        paginator = Paginator(blogs, per_page)
+        page_obj = paginator.get_page(page)
+
+        serializer = BlogSerializer(page_obj, many=True)
+
+        return Response({
+            "status": "true",
+            "pagination": {
+                "total_items": paginator.count,
+                "per_page": str(per_page),
+                "currentPage": page,
+                "totalPages": paginator.num_pages
+            },
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
+
+# ✅ BLOG DETAIL
+class BlogDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BlogSerializer(blog)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TagListView(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+    class Pagination(PageNumberPagination):
+        page_size = 20
+
+    pagination_class = Pagination

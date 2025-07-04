@@ -300,3 +300,22 @@ class ContactForm(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.email}"
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+        
+class Blog(models.Model):
+    name = models.CharField(max_length=255)  # was 'title'
+    tags = models.ManyToManyField(Tag, blank=True)  # assuming Tag model exists
+    description = models.TextField()
+    status = models.BooleanField(default=True)
+    article_image = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.name

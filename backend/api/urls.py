@@ -14,8 +14,10 @@ from api.views import (
     NearbyPropertiesView,
     ServiceListAPIView,
     ServiceDetailAPIView,
-    submit_contact_form
-
+    submit_contact_form,
+    BlogListView,
+    BlogDetailView,
+    TagListView
 )
 
 urlpatterns = [
@@ -34,6 +36,9 @@ urlpatterns = [
     path('service-list/', ServiceListAPIView.as_view()),
     path('service-detail/<int:id>/', ServiceDetailAPIView.as_view(), name="service-detail"),
     path('submit-contact-form/', submit_contact_form),
+    path('article-list/', BlogListView.as_view(), name='blog-list'),
+    path('article-detail/<int:pk>/', BlogDetailView.as_view(), name='blog-detail'),
+    path('tags-list/', TagListView.as_view(), name='tag-list'),
 
     #path('favorites/', FavoriteListAPIView.as_view(), name='favorite-list'),
 

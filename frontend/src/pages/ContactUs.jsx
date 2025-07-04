@@ -42,7 +42,7 @@ const ContactUs = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/submit-contact-form/', {
+      const response = await fetch('https://broki-clone-ui.onrender.com/api/submit-contact-form/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

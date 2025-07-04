@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import (
     OutletForm, Property, Category, City, PropertyGallery, PropertyAmenity, Customer,
     Service, Attachment, Slot, ServiceFAQ, ServiceAddon, Tax, ProviderAddress,
-    Provider, Coupon, ServiceReview, CustomerService, ServiceAddressMapping,ServiceCategory, ServiceSubCategory,ContactForm 
+    Provider, Coupon, ServiceReview, CustomerService, ServiceAddressMapping,ServiceCategory, ServiceSubCategory,ContactForm,
+    Blog, Tag
 )
 from django.contrib.auth import get_user_model
 import re
@@ -261,3 +262,18 @@ class ContactFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactForm
         fields = ['name', 'phone', 'email', 'outlet_type', 'location', 'brand_name']
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
+
+class BlogSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = Blog
+        fields = [
+            "id", "name", "tags", "description",
+            "status", "article_image", "created_at", "updated_at"
+        ]
