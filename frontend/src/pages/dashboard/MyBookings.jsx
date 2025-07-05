@@ -3,12 +3,14 @@ import { bookingsData } from "../../lib/Constant";
 import Sidebar from "../../components/dashboard/Sidebar";
 import ServicesFooter from "../../components/dashboard/ServicesFooter";
 import Pagination from "../../components/common/pagination/Pagination";
+import { useLogout } from "../../hooks/useAuth";
 
 export default function MyBookings() {
   const [bookings] = useState(bookingsData);
+  const logout = useLogout();
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async () => {
+    await logout();
   };
 
   const totalItems = 25;

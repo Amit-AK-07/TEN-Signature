@@ -7,10 +7,11 @@ const ServiceCard = ({ card, view }) => {
   return (
     <div
       key={card.id}
-      className={`bg-white shadow-md rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 ${
+      className={`bg-white shadow-md rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group fade-in-up ${
         view === "list" ? "flex" : "flex flex-col"
       }`}
     >
+      {/* Image Section */}
       <div className="relative group overflow-hidden">
         <img
           src={
@@ -19,13 +20,14 @@ const ServiceCard = ({ card, view }) => {
               : "https://via.placeholder.com/300x200?text=No+Image"
           }
           alt={card.name}
-          className={`img-animation ${
+          className={`img-animattion ${
             view === "list"
               ? "w-100 h-52 object-cover group-hover:scale-105"
               : "w-full h-56 object-cover group-hover:scale-105"
           }`}
         />
 
+        {/* Featured Badge */}
         {card.is_featured && (
           <div className="absolute top-4 left-4 bg-[#26c4a0] text-white text-xs font-bold px-2 py-2 rounded flex items-center gap-1 shadow transition-all duration-300 ease-in-out group-hover:translate-y-full group-hover:opacity-0">
             <FontAwesomeIcon icon={faBolt} className="w-3.5 h-3.5" />
@@ -33,11 +35,13 @@ const ServiceCard = ({ card, view }) => {
           </div>
         )}
 
+        {/* Price Tag */}
         <div className="absolute bottom-2 left-2 bg-white text-black text-sm font-semibold px-3 py-1 rounded shadow">
           {card.price_format} /item
         </div>
       </div>
 
+      {/* Text Section */}
       <div className="p-4 flex flex-col justify-between gap-2 w-full">
         <div>
           <h3 className="text-base font-semibold text-gray-900">

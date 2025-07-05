@@ -3,12 +3,14 @@ import { bookingsData } from "../../lib/Constant";
 import Sidebar from "../../components/dashboard/Sidebar";
 import PhotosUploadForm from "../../components/dashboardpages/PhotosUploadForm";
 import MapLocationForm from "../../components/dashboardpages/MapLocationForm";
+import { useLogout } from "../../hooks/useAuth";
 
 const AddProperty = () => {
   const [bookings] = useState(bookingsData);
+  const logout = useLogout();
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async () => {
+    await logout();
   };
   const categories = ["Commercial", "Residential", "Plot"];
   const propertyForOptions = ["Rent", "Sale"];

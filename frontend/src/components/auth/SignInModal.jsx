@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 
-const SignInModal = ({   onClose, setIsLoggedIn  }) => {
+const SignInModal = ({ onClose }) => {
   const [isSignIn, setIsSignIn] = useState(true);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const SignInModal = ({   onClose, setIsLoggedIn  }) => {
         </div>
 
         {isSignIn ? (
-          <SignInForm  onClose={onClose} setIsLoggedIn={setIsLoggedIn} />
+          <SignInForm onClose={onClose} />
         ) : (
           <SignUpForm onClose={onClose} />
         )}

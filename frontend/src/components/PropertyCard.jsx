@@ -27,7 +27,7 @@ const PropertyCard = ({ property }) => {
         <img
           src={property.image || "https://via.placeholder.com/300"}
           alt={property.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-all duration-500 hover:scale-110 hover:rotate-[-1deg]"
         />
 
         {/* Featured Badge */}

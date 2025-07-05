@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useLogout } from "../../../hooks/useAuth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -23,15 +24,17 @@ import { navLinks } from "../../../lib/Constant";
 const Navbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const logout = useLogout();
+  
+  // Determine if user is logged in based on Redux state
+  const isLoggedIn = !!user;
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem("authToken");
+  const handleLogout = async () => {
+    await logout();
     setIsDropdownOpen(false);
   };
 
@@ -147,7 +150,7 @@ const Navbar = () => {
                 >
                   <div className="flex items-center space-x-2 cursor-pointer">
                     <FontAwesomeIcon icon={faUserCircle} className="text-lg" />
-                    <span>Hello, UserName</span>
+                    <span>Hello, {user?.first_name || user?.email || 'User'}</span>
                   </div>
 
                   {isDropdownOpen && (
@@ -271,7 +274,6 @@ const Navbar = () => {
       {showModal && (
         <SignInModal
           onClose={() => setShowModal(false)}
-          setIsLoggedIn={setIsLoggedIn}
         />
       )}
     </nav>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import { fetchPropertyDetail } from "../apiAction/properties/Index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NearbyListings from "../components/NearbyListings";
 
@@ -18,10 +18,16 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    axios
-      .post("https://broki-clone-ui.onrender.com/api/property-detail/", { id })
-      .then((response) => setProperty(response.data))
-      .catch((error) => console.error("Error fetching property:", error));
+    const loadProperty = async () => {
+      try {
+        const response = await fetchPropertyDetail(id);
+        setProperty(response);
+      } catch (error) {
+        console.error("Error fetching property:", error);
+      }
+    };
+    
+    loadProperty();
   }, [id]);
 
   if (!property) {

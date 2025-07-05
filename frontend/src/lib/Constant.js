@@ -489,11 +489,11 @@ export const servicesLinks = [
 // Listing Page Data
 
 export const defaultFilters = {
-  status: "All",
-  type: "All Types",
+  location: "All Locations",
+  category: "All Categories",
+  property_for: "All",
   minPrice: "",
   maxPrice: "",
-  location: "All Locations",
 };
 
 export const filterOptions = [

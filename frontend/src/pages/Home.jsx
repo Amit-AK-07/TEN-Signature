@@ -2,24 +2,22 @@ import HeroSection from "../components/Home/HeroSection";
 import SearchTabs from "../components/Home/SearchTabs";
 import AutoScroll from "../components/AutoScroll";
 import NearbyListings from "../components/NearbyListings";
-import PropertyCards from "../components/PropertyCards";
 import PhotographySec from "../components/PhotographySec";
 import WhyChooseUs from "../components/WhyChooseUs";
 import Form from "../components/Form";
 import DownloadSec from "../components/DownloadSec";
 import AdvancedModal from "../components/Home/AdvancedModal";
 import useSearch from "../components/Home/useSearch";
-import { blogPost } from "../lib/Constant";
 import HeroImg from "../assets/images/hero-img.webp";
 import subHeroImg from "../assets/images/sub-hero-img.webp";
 import PhotoSec from "../assets/images/photosec.webp";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BlogPosts from "../components/BlogPosts";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Home() {
   const search = useSearch();
-  const posts = blogPost;
 
   const content = {
     titleParts: [
@@ -41,6 +39,8 @@ export default function Home() {
   };
 
   const [showAdvancedModal, setShowAdvancedModal] = useState(false);
+  const [posts, setPosts] = useState([]); // Blogs for Home page
+
   const handleOpenAdvanced = () => setShowAdvancedModal(true);
 
   const containerVariants = {
@@ -61,6 +61,23 @@ export default function Home() {
     },
   };
 
+  // ✅ Fetch only 3 latest blogs
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get(
+          "https://broki-clone-ui.onrender.com/api/article-list/"
+        );
+        const blogs = response.data.data || []; // ✅ Fixed: extract from .data
+        setPosts(blogs.slice(0, 3)); // Take latest 3
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
   return (
     <div className="overflow-hidden w-full font-[poppins]">
       <HeroSection content={content}>
@@ -73,6 +90,7 @@ export default function Home() {
       <WhyChooseUs />
       <Form />
 
+      {/* 🆕 From Our Blog Section */}
       <motion.section
         className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 py-16"
         variants={containerVariants}
@@ -80,16 +98,13 @@ export default function Home() {
         whileInView="show"
         viewport={{ once: true }}
       >
-        <motion.h2
-          className="text-center text-[25px] md:text-[30px] font-extrabold mb-12"
-          variants={itemVariants}
-        >
+        <motion.h2 className="text-center text-[25px] md:text-[30px] font-extrabold mb-12">
           From Our Blog
         </motion.h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <motion.div key={post.id} variants={itemVariants}>
+            <motion.div key={post.id}>
               <BlogPosts post={post} />
             </motion.div>
           ))}

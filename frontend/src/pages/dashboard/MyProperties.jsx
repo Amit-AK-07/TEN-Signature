@@ -3,12 +3,14 @@ import { propertiesData } from "../../lib/Constant";
 import Sidebar from "../../components/dashboard/Sidebar";
 import Pagination from "../../components/common/pagination/Pagination";
 import ServicesFooter from "../../components/dashboard/ServicesFooter";
+import { useLogout } from "../../hooks/useAuth";
 
 export default function MyProperties() {
   const [properties] = useState(propertiesData);
+  const logout = useLogout();
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async () => {
+    await logout();
   };
 
   const totalItems = 25;

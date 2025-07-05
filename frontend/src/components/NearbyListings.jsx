@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import { fetchProperties, fetchNearbyProperties } from "../apiAction/properties/Index";
 import PropertyCard from "./PropertyCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -48,42 +48,55 @@ const NearbyListings = ({ mode, city, excludeId }) => {
     const fetchListings = async () => {
       setLoading(true);
       try {
-        let url = "";
-        let params = {};
+        let response;
 
         if (mode === "detail" && city && excludeId) {
-          url = "https://broki-clone-ui.onrender.com/api/nearby-property-list/";
-          params = { city, exclude_id: excludeId, per_page: 12, page: 1 };
+          // Fetch nearby properties for detail page
+          response = await fetchNearbyProperties(city, excludeId, 1, 12);
         } else {
-          url = "https://broki-clone-ui.onrender.com/api/filter-property-list/";
+          // Fetch all properties for home page
+          const params = {
+            page_size: 20, // Get more results to filter from
+          };
+          if (activeTab === "rent") {
+            params.property_for = 0; // Rent
+          } else if (activeTab === "sale") {
+            params.property_for = 1; // Sale
+          }
+          response = await fetchProperties(params);
         }
 
-        const res = await axios.get(url, { params });
+        // Handle response structure (pagination or direct array)
+        const data = response.results || response;
 
-        const mapped = res.data.results.map((item) => ({
+        // Safety check for data
+        if (!Array.isArray(data)) {
+          console.warn("Invalid data structure received:", response);
+          setListings([]);
+          return;
+        }
+
+        const mapped = data.map((item) => ({
           id: item.id,
           name: item.name,
-          price: item.price_format,
+          price: item.price_format || `₹${item.price}`,
           location: item.city?.name || "Unknown",
           image: item.property_image || "https://via.placeholder.com/300",
           sqft: item.sqft,
-          type: item.price_duration === "monthly" ? "For Rent" : "For Sale",
-          is_featured: item.is_featured,
+          type: item.property_for === 0 ? "For Rent" : "For Sale",
+          is_featured: item.premium_property || false,
         }));
 
         let filtered = mapped;
         if (mode !== "detail") {
-          filtered = mapped.filter(
-            (property) =>
-              property.type.toLowerCase() ===
-              (activeTab === "rent" ? "for rent" : "for sale")
-          );
-          filtered = filtered.slice(0, 3); // ✅ Only 3 for home
+          // For home page, limit to 3 items
+          filtered = filtered.slice(0, 3);
         }
 
         setListings(filtered);
       } catch (err) {
         console.error("Error fetching nearby listings:", err);
+        setListings([]);
       } finally {
         setLoading(false);
       }

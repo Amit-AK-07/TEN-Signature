@@ -1,27 +1,20 @@
 import { monthNames } from "../lib/Constant";
 import { Link } from "react-router-dom";
+
 const BlogPosts = ({ post }) => {
-  const day = post.date.getDate();
-  const month = monthNames[post.date.getMonth()];
+  // 🗓 Parse date from API
+  const postDate = post.created_at ? new Date(post.created_at) : new Date();
+  const day = postDate.getDate();
+  const month = monthNames[postDate.getMonth()];
 
   return (
     <article className="relative rounded-xl w-full max-w-sm mx-auto cursor-pointer">
-      <Link
-        to={`/blogs-posts-card/${post.id}`}
-        state={{ post }}
-        // navigate dynamically to the blog post detail page
-      >
-        <div className="overflow-hidden rounded-tl-xl rounded-bl-xl">
+      <Link to={`/blogs-posts-card/${post.id}`} state={{ post }}>
+        <div className="overflow-hidden rounded-xl ">
           <img
-            src={post.image}
-            alt={`${post.category} blog image showing related content`}
-            className={`img-animattion transition-all duration-400 ease-in-out rounded-tl-xl rounded-bl-xl w-full object-cover ${
-              post.id === 1
-                ? "bg-[#d7f0ef]"
-                : post.id === 2
-                ? "bg-[#ffcc00]"
-                : ""
-            }`}
+            src={post.article_image || "/default-blog.jpg"} // ✅ Use API field + fallback
+            alt={`${post.tags[0]?.name || "Blog"} image`}
+            className="img-animattion transition-all duration-400 ease-in-out rounded-tl-xl rounded-bl-xl w-full object-cover"
             height="220"
             width="400"
           />
@@ -33,9 +26,11 @@ const BlogPosts = ({ post }) => {
           </div>
         </div>
         <div className="px-4 pt-4 pb-6">
-          <p className="text-[13px] text-gray-500 mb-1">{post.category}</p>
+          <p className="text-[13px] text-gray-500 mb-1">
+            {post.tags[0]?.name || "General"} {/* ✅ Safe category */}
+          </p>
           <h3 className="font-semibold text-[15px] leading-snug">
-            {post.title}
+            {post.name || "Untitled Blog"} {/* ✅ Safe title */}
           </h3>
         </div>
       </Link>
