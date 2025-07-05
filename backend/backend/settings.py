@@ -153,6 +153,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
+# For development - allow all origins on localhost
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 CACHES = {

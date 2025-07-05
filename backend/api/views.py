@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -192,6 +193,28 @@ class PropertyListAPIView(ListAPIView):
     ordering_fields = ['price', 'sqft', 'premium_property']
     ordering = ['-premium_property']
 
+    def list(self, request, *args, **kwargs):
+        # Apply filtering, searching, and ordering
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Custom pagination
+        page = request.query_params.get('page', 1)
+        page_size = request.query_params.get('page_size', 6)  # Default 6, matches your frontend
+
+        paginator = PageNumberPagination()
+        paginator.page_size = int(page_size)
+        paginator.max_page_size = 100  # Optional: prevent abuse
+        
+        result_page = paginator.paginate_queryset(queryset, request)
+        
+        if result_page is not None:
+            serializer = self.get_serializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        
+        # Fallback if no pagination needed
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 
 class PropertyBulkUploadView(APIView):
@@ -260,7 +283,7 @@ class NearbyPropertiesView(ListAPIView):
 
         # Pagination
         page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 5)
+        per_page = request.query_params.get('per_page', 12)
 
         paginator = PageNumberPagination()
         paginator.page_size = per_page
@@ -385,3 +408,6 @@ class TagListView(ListAPIView):
         page_size = 20
 
     pagination_class = Pagination
+
+def documentation(request):
+    return render(request, 'api/documentation.html')

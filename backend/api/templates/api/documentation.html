@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .method-get { background-color: #3b82f6; }
+        .method-post { background-color: #16a34a; }
+        .method-put { background-color: #f97316; }
+        .method-delete { background-color: #dc2626; }
+        .active-link {
+            background-color: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <nav id="navbar" class="w-72 h-screen fixed top-0 left-0 bg-white border-r border-slate-200 p-6 overflow-y-auto">
+            <h1 class="text-xl font-bold text-slate-900 mb-6">API Menu</h1>
+            <ul class="space-y-2">
+                <li><a href="#general" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">General Info</a></li>
+                <li><a href="#auth-endpoints" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 font-semibold">Authentication</a></li>
+                <li><a href="#register-user" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">POST /register/</a></li>
+                <li><a href="#send-otp" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">POST /send-otp/</a></li>
+                <li><a href="#verify-otp" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">POST /verify-otp/</a></li>
+                <li><a href="#logout" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">POST /logout/</a></li>
+
+                <li><a href="#user-endpoints" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 font-semibold">User</a></li>
+                <li><a href="#auth-status" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /auth-status/</a></li>
+
+                <li><a href="#property-endpoints" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 font-semibold">Properties</a></li>
+                <li><a href="#list-properties" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /filter-property-list/</a></li>
+                <li><a href="#property-detail" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /property-detail/</a></li>
+                <li><a href="#nearby-properties" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /nearby-property-list/</a></li>
+
+                <li><a href="#service-endpoints" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 font-semibold">Services</a></li>
+                <li><a href="#list-services" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /service-list/</a></li>
+                <li><a href="#service-detail" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /service-detail/&lt;id&gt;/</a></li>
+
+                <li><a href="#utility-endpoints" class="nav-link block px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 font-semibold">Utility</a></li>
+                <li><a href="#list-cities" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /cities/</a></li>
+                <li><a href="#list-categories" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">GET /categories/</a></li>
+                <li><a href="#submit-form" class="nav-link block pl-8 pr-4 py-2 rounded-md text-slate-600 hover:bg-slate-100">POST /submit-form/</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" class="ml-72 p-10 w-full">
+            <h1 class="text-4xl font-bold text-slate-900 mb-4">API Documentation</h1>
+            <p class="text-lg text-slate-600 mb-12">A comprehensive guide to the project's backend API.</p>
+
+            <section id="general" class="mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">General Information</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2">Base URL</h4>
+                        <p>All API endpoints are prefixed with a base URL. For development, this might be <code>http://127.0.0.1:8000/api</code>.</p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>http://yourdomain.com/api/</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2">Authentication</h4>
+                        <p>Endpoints marked as <span class="font-semibold text-red-600">Authentication Required</span> need a JSON Web Token (JWT) in the request header:</p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>Authorization: Bearer &lt;your_access_token&gt;</code></pre>
+                        <p class="mt-2">The <code>access_token</code> is obtained from the <b>POST /verify-otp/</b> endpoint.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2">Error Responses</h4>
+                        <p>Errors return a <code>4xx</code> or <code>5xx</code> status code and a JSON body describing the error.</p>
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                            <li><b>Field Errors (400):</b> <code>{"field_name": ["Error message."]}</code></li>
+                            <li><b>General Errors:</b> <code>{"detail": "A specific error message."}</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Authentication Endpoints -->
+            <section id="auth-endpoints" class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 pb-3 border-b border-slate-200">Authentication</h2>
+                <div class="space-y-12">
+                    <article id="register-user">
+                        <h3 class="text-2xl font-semibold mb-3">Register User</h3>
+                        <p class="mb-4">Creates a new user account. Does not log them in.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-post text-white font-bold text-sm py-1 px-3 rounded-md">POST</span>
+                            <code class="text-base font-mono text-slate-800">/api/register/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Request Body (camelCase)</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>firstName</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">User's first name.</td></tr><tr><td class="p-3 border-b"><code>lastName</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">User's last name.</td></tr><tr><td class="p-3"><code>email</code></td><td class="p-3">String</td><td class="p-3">User's unique email address.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>201 Created (Success)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "User registered successfully. Please verify OTP to login."}</code></pre>
+                        <p class="mt-2"><b>400 Bad Request (Error)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"email": ["Email already registered."]}</code></pre>
+                    </article>
+                    
+                    <article id="send-otp">
+                        <h3 class="text-2xl font-semibold mb-3">Send Login OTP</h3>
+                        <p class="mb-4">Sends an OTP to a registered user's email.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-post text-white font-bold text-sm py-1 px-3 rounded-md">POST</span>
+                            <code class="text-base font-mono text-slate-800">/api/send-otp/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Request Body</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3"><code>email</code></td><td class="p-3">String</td><td class="p-3">Email of the registered user.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>200 OK (Success)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "OTP sent to your email"}</code></pre>
+                        <p class="mt-2"><b>429 Too Many Requests (Cooldown)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "Please wait before requesting another OTP."}</code></pre>
+                    </article>
+
+                    <article id="verify-otp">
+                        <h3 class="text-2xl font-semibold mb-3">Verify OTP & Login</h3>
+                        <p class="mb-4">Verifies the OTP to log the user in and returns auth tokens.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-post text-white font-bold text-sm py-1 px-3 rounded-md">POST</span>
+                            <code class="text-base font-mono text-slate-800">/api/verify-otp/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Request Body</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>email</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">User's email.</td></tr><tr><td class="p-3"><code>otp</code></td><td class="p-3">String</td><td class="p-3">The 6-digit code from the email.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>200 OK (Success)</b></p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "detail": "Logged in as user@example.com",
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxOTkzMTI5NywiaWF0IjoxNzE5ODQ0ODk3LCJqdGkiOiI4ZjE5YjU3YjE1ZGE0ZTg4YWEzMWYyYmYzMGIxN2Y4MSIsInVzZXJfaWQiOjF9.abcdefg",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE5ODQ1MTk3LCJpYXQiOjE3MTk4NDQ4OTcsImp0aSI6ImM0YjU4YjY4ZWY0NzQwYjhhYmE5ZWYwYzY4N2YwZWYxIiwidXNlcl9pZCI6MX0.hijklmn",
+    "user": {
+        "email": "user@example.com",
+        "username": "user@example.com",
+        "first_name": "John",
+        "last_name": "Doe"
+    }
+}</code></pre>
+                        <p class="mt-2"><b>400 Bad Request (Error)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "Invalid or expired OTP."}</code></pre>
+                    </article>
+
+                    <article id="logout">
+                        <h3 class="text-2xl font-semibold mb-3">Logout User</h3>
+                        <p class="mb-4">Logs the user out by blacklisting their refresh token.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-post text-white font-bold text-sm py-1 px-3 rounded-md">POST</span>
+                            <code class="text-base font-mono text-slate-800">/api/logout/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> <span class="font-semibold text-red-600">Required</span>.</p>
+                        <h4 class="text-lg font-semibold mb-2">Request Body</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3"><code>refresh</code></td><td class="p-3">String</td><td class="p-3">The refresh token from login.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>200 OK (Success)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "Logged out successfully"}</code></pre>
+                    </article>
+                </div>
+            </section>
+            
+            <!-- User Endpoints -->
+            <section id="user-endpoints" class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 pb-3 border-b border-slate-200">User</h2>
+                <div class="space-y-12">
+                     <article id="auth-status">
+                        <h3 class="text-2xl font-semibold mb-3">Check Authentication Status</h3>
+                        <p class="mb-4">Checks if the current user's token is valid and returns their details.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/auth-status/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> <span class="font-semibold text-red-600">Required</span>.</p>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>200 OK (Authenticated)</b></p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "is_authenticated": true,
+    "email": "current.user@example.com",
+    "username": "current.user@example.com",
+    "first_name": "John"
+}</code></pre>
+                        <p class="mt-2"><b>401 Unauthorized (Error)</b></p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"detail": "Authentication credentials were not provided."}</code></pre>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Property Endpoints -->
+            <section id="property-endpoints" class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 pb-3 border-b border-slate-200">Properties</h2>
+                 <div class="space-y-12">
+                    <article id="list-properties">
+                        <h3 class="text-2xl font-semibold mb-3">Filter, Search & List Properties</h3>
+                        <p class="mb-4">Retrieves properties with powerful filtering, searching, and sorting.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/filter-property-list/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Query Parameters (Optional)</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>city</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">ID of the city.</td></tr><tr><td class="p-3 border-b"><code>category</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">ID of the category.</td></tr><tr><td class="p-3 border-b"><code>price_min</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Minimum property price.</td></tr><tr><td class="p-3 border-b"><code>price_max</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Maximum property price.</td></tr><tr><td class="p-3 border-b"><code>sqft_min</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Minimum square footage.</td></tr><tr><td class="p-3 border-b"><code>sqft_max</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Maximum square footage.</td></tr><tr><td class="p-3 border-b"><code>property_for</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Listing type (0=Rent, 1=Sale).</td></tr><tr><td class="p-3 border-b"><code>search</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Search term for name, address, city.</td></tr><tr><td class="p-3"><code>ordering</code></td><td class="p-3">String</td><td class="p-3">Sort by: <code>price</code>, <code>-price</code>, <code>sqft</code>.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <p>Returns a list of property objects.</p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>[
+    {
+        "id": 1,
+        "name": "Modern Downtown Apartment",
+        "category": 2,
+        "price": "120000",
+        "price_format": "1.2 Lakh",
+        "address": "123 Main St, Anytown",
+        "status": true,
+        "premium_property": true,
+        "price_duration": "Monthly",
+        "property_image": "https://example.com/images/apartment.jpg",
+        "property_for": 1,
+        "advertisement_property": false,
+        "advertisement_property_date": null,
+        "city": {
+            "id": 1,
+            "name": "Anytown"
+        },
+        "sqft": 1100
+    }
+]</code></pre>
+                    </article>
+                    <article id="property-detail">
+                        <h3 class="text-2xl font-semibold mb-3">Get Property Details</h3>
+                        <p class="mb-4">Retrieves all details for a single property.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/property-detail/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Query Parameters</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3"><code>id</code></td><td class="p-3">Number</td><td class="p-3"><strong class="text-red-600">Required.</strong> The ID of the property.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <p>Returns a full property object including gallery and amenities.</p>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "id": 42,
+    "name": "Luxury Villa",
+    "category": "Villa",
+    "city": "Metropolis",
+    "price": "50000000",
+    "price_format": "5 Cr",
+    "address": "101 Ocean Drive, Metropolis",
+    "description": "A beautiful villa with an ocean view and modern amenities.",
+    "status": true,
+    "premium_property": true,
+    "price_duration": "Yearly",
+    "property_image": "https://example.com/images/villa_main.jpg",
+    "property_for": 1,
+    "advertisement_property": true,
+    "advertisement_property_date": "2025-07-15T10:00:00Z",
+    "sqft": 4500,
+    "brand_name": "Elite Homes",
+    "current_rental": "200000",
+    "monthly_sale": "500000",
+    "age_of_property": 5,
+    "latitude": "28.6139",
+    "longitude": "77.2090",
+    "country": "India",
+    "state": "Delhi",
+    "customer": {
+        "id": 5,
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "email": "jane.doe@example.com",
+        "contact_number": "9876543210",
+        "profile_image": "https://example.com/images/jane_doe.jpg",
+        "display_name": "Jane D."
+    },
+    "gallery": [
+        { "id": 101, "image_url": "https://example.com/images/gallery/villa1.jpg" },
+        { "id": 102, "image_url": "https://example.com/images/gallery/villa2.jpg" }
+    ],
+    "amenities": [
+        { 
+            "id": 25,
+            "name": "Swimming Pool", 
+            "type": "Outdoor", 
+            "value": "Heated", 
+            "amenity_image": "https://example.com/images/amenities/pool.png" 
+        },
+        { 
+            "id": 26,
+            "name": "Parking", 
+            "type": "Garage", 
+            "value": "2 cars", 
+            "amenity_image": "https://example.com/images/amenities/garage.png" 
+        }
+    ]
+}</code></pre>
+                    </article>
+                     <article id="nearby-properties">
+                        <h3 class="text-2xl font-semibold mb-3">Get Nearby Properties</h3>
+                        <p class="mb-4">Retrieves a paginated list of properties in the same city.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/nearby-property-list/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Query Parameters</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>city</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b"><strong class="text-red-600">Required.</strong> The name of the city (case-insensitive).</td></tr><tr><td class="p-3 border-b"><code>exclude_id</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b"><strong class="text-red-600">Required.</strong> The ID of the current property to exclude.</td></tr><tr><td class="p-3 border-b"><code>page</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Page number (default 1).</td></tr><tr><td class="p-3"><code>per_page</code></td><td class="p-3">Number</td><td class="p-3">Items per page (default 5).</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "count": 25,
+    "next": "http://yourdomain.com/api/nearby-property-list/?city=Metropolis&exclude_id=42&page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 2,
+            "name": "Cozy Studio",
+            "category": 1,
+            "price": "85000",
+            "price_format": "85 K",
+            "address": "456 Park Ave, Metropolis",
+            "status": true,
+            "premium_property": false,
+            "price_duration": "Monthly",
+            "property_image": "https://example.com/images/studio.jpg",
+            "property_for": 0,
+            "advertisement_property": false,
+            "advertisement_property_date": null,
+            "city": {
+                "id": 2,
+                "name": "Metropolis"
+            },
+            "sqft": 600
+        }
+    ]
+}</code></pre>
+                    </article>
+                </div>
+            </section>
+            
+            <!-- Service Endpoints -->
+            <section id="service-endpoints" class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 pb-3 border-b border-slate-200">Services</h2>
+                 <div class="space-y-12">
+                    <article id="list-services">
+                        <h3 class="text-2xl font-semibold mb-3">List Services</h3>
+                        <p class="mb-4">Retrieves a paginated list of services.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/service-list/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Query Parameters</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>status</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Filter by status (e.g., 1 for active).</td></tr><tr><td class="p-3 border-b"><code>page</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">The page number to retrieve.</td></tr><tr><td class="p-3"><code>per_page</code></td><td class="p-3">Number</td><td class="p-3">Items per page (default is 7).</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "pagination": {
+        "total_items": 100,
+        "per_page": 7,
+        "currentPage": 1,
+        "totalPages": 15,
+        "from": 1,
+        "to": 7,
+        "next_page": "http://yourdomain.com/api/service-list/?page=2",
+        "previous_page": null
+    },
+    "data": [
+        {
+            "id": 1,
+            "name": "Deep Home Cleaning",
+            "category_id": 1,
+            "subcategory_id": 1,
+            "provider_id": 1,
+            "price": "2500.00",
+            "price_format": "₹2500.00",
+            "type": "hourly",
+            "discount": "10.00",
+            "duration": "03:00:00",
+            "status": 1,
+            "description": "Complete home cleaning service.",
+            "is_featured": true,
+            "provider_name": "CleanCo",
+            "provider_image": "https://example.com/images/cleanco.png",
+            "city_id": 1,
+            "category_name": "Cleaning",
+            "subcategory_name": "Home Cleaning",
+            "attchments": ["https://example.com/attachments/1.jpg"],
+            "attchments_array": [{"id": 1, "url": "https://example.com/attachments/1.jpg"}],
+            "total_review": 150,
+            "total_rating": "4.80",
+            "is_favourite": false,
+            "attchment_extension": true,
+            "slots": [{"day": "Monday", "slot": ["09:00", "11:00", "14:00"]}],
+            "visit_type": "on-site",
+            "is_enable_advance_payment": true,
+            "advance_payment_amount": "500.00",
+            "moq": 1
+        }
+    ],
+    "max": "5000.00",
+    "min": "500.00"
+}</code></pre>
+                    </article>
+                    <article id="service-detail">
+                        <h3 class="text-2xl font-semibold mb-3">Get Service Details</h3>
+                        <p class="mb-4">Retrieves comprehensive details for a single service.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/service-detail/&lt;id&gt;/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">URL Parameters</h4>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3"><code>id</code></td><td class="p-3">Number</td><td class="p-3"><strong class="text-red-600">Required.</strong> The ID of the service.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{
+    "service_detail": {
+        "id": 1,
+        "name": "Deep Home Cleaning",
+        "category_id": 1,
+        "subcategory_id": 1,
+        "provider_id": 1,
+        "price": "2500.00",
+        "price_format": "₹2500.00",
+        "type": "hourly",
+        "discount": "10.00",
+        "duration": "03:00:00",
+        "status": 1,
+        "description": "Complete home cleaning service.",
+        "is_featured": true,
+        "provider_name": "CleanCo",
+        "provider_image": "https://example.com/images/cleanco.png",
+        "city_id": 1,
+        "category_name": "Cleaning",
+        "subcategory_name": "Home Cleaning",
+        "attchments": ["https://example.com/attachments/1.jpg"],
+        "attchments_array": [{"id": 1, "url": "https://example.com/attachments/1.jpg"}],
+        "total_review": 150,
+        "total_rating": "4.80",
+        "is_favourite": false,
+        "attchment_extension": true,
+        "slots": [{"day": "Monday", "slot": ["09:00", "11:00", "14:00"]}],
+        "visit_type": "on-site",
+        "is_enable_advance_payment": true,
+        "advance_payment_amount": "500.00",
+        "moq": 1
+    },
+    "provider": {
+        "name": "CleanCo",
+        "image": "https://example.com/images/cleanco.png",
+        "about": "Your trusted partner in home cleaning services.",
+        "contact_number": "+919999988888",
+        "email": "contact@cleanco.com",
+        "addresses": [
+            {
+                "address": "123 Business Hub, Noida",
+                "latitude": "28.5355",
+                "longitude": "77.3910",
+                "status": true
+            }
+        ],
+        "taxes": [
+            {
+                "title": "GST",
+                "type": "percent",
+                "value": "18.00"
+            }
+        ]
+    },
+    "rating_data": {
+        "total_review": 150,
+        "total_rating": 4.8
+    },
+    "customer_review": [],
+    "coupon_data": [],
+    "related_service": [
+        {
+            "id": 2,
+            "name": "Office Cleaning",
+            "price": "4000.00",
+            "category_name": "Cleaning",
+            "subcategory_name": "Commercial Cleaning",
+            "provider_name": "CleanCo",
+            "attchments": ["https://example.com/attachments/2.jpg"]
+        }
+    ],
+    "service_faq": [
+        {
+            "title": "What is included in the deep cleaning?",
+            "description": "It includes cleaning of all rooms, bathrooms, and kitchen.",
+            "status": true,
+            "created_at": "2025-06-01T10:00:00Z"
+        }
+    ],
+    "serviceaddon": [
+        {
+            "name": "Carpet Shampoo",
+            "price": "800.00",
+            "image": "https://example.com/addons/carpet.jpg",
+            "status": true
+        }
+    ]
+}</code></pre>
+                        <p class="mt-2"><b>404 Not Found (Error)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"error": "Service not found"}</code></pre>
+                    </article>
+                </div>
+            </section>
+            
+            <!-- Utility Endpoints -->
+            <section id="utility-endpoints" class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 pb-3 border-b border-slate-200">Utility</h2>
+                 <div class="space-y-12">
+                     <article id="list-cities">
+                        <h3 class="text-2xl font-semibold mb-3">List All Cities</h3>
+                        <p class="mb-4">Retrieves a simple list of all available cities.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/cities/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>[
+    { "id": 1, "name": "Metropolis" },
+    { "id": 2, "name": "Gotham" }
+]</code></pre>
+                    </article>
+                     <article id="list-categories">
+                        <h3 class="text-2xl font-semibold mb-3">List All Categories</h3>
+                        <p class="mb-4">Retrieves a list of all available property categories.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-get text-white font-bold text-sm py-1 px-3 rounded-md">GET</span>
+                            <code class="text-base font-mono text-slate-800">/api/categories/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Success Response (200 OK)</h4>
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>[
+    { "id": 1, "name": "Apartment", "image": "https://example.com/categories/apartment.png" },
+    { "id": 2, "name": "Villa", "image": "https://example.com/categories/villa.png" }
+]</code></pre>
+                    </article>
+                     <article id="submit-form">
+                        <h3 class="text-2xl font-semibold mb-3">Submit Outlet Form</h3>
+                        <p class="mb-4">A generic endpoint to submit data from an outlet form.</p>
+                        <div class="flex items-center gap-4 mb-4 p-3 bg-slate-100 rounded-lg">
+                            <span class="method-post text-white font-bold text-sm py-1 px-3 rounded-md">POST</span>
+                            <code class="text-base font-mono text-slate-800">/api/submit-form/</code>
+                        </div>
+                        <p class="mb-4"><b>Authentication:</b> Not Required.</p>
+                        <h4 class="text-lg font-semibold mb-2">Request Body</h4>
+                        <p>The frontend must send a JSON object with all fields from the <code>OutletForm</code> model.</p>
+                        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="bg-slate-100"><th class="text-left p-3">Key</th><th class="text-left p-3">Type</th><th class="text-left p-3">Description</th></tr></thead><tbody><tr><td class="p-3 border-b"><code>name</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Contact name.</td></tr><tr><td class="p-3 border-b"><code>phone</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Contact phone.</td></tr><tr><td class="p-3 border-b"><code>email</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Contact email.</td></tr><tr><td class="p-3 border-b"><code>outlet_type</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Type of the outlet.</td></tr><tr><td class="p-3 border-b"><code>location</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Desired location.</td></tr><tr><td class="p-3 border-b"><code>brand</code></td><td class="p-3 border-b">String</td><td class="p-3 border-b">Brand name.</td></tr><tr><td class="p-3 border-b"><code>max_budget</code></td><td class="p-3 border-b">Number</td><td class="p-3 border-b">Maximum budget.</td></tr><tr><td class="p-3"><code>min_size</code></td><td class="p-3">Number</td><td class="p-3">Minimum size in sqft.</td></tr></tbody></table></div>
+                        <h4 class="text-lg font-semibold mt-4 mb-2">Responses</h4>
+                        <p><b>200 OK (Success)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"message": "Data saved successfully!"}</code></pre>
+                        <p class="mt-2"><b>400 Bad Request (Error)</b></p><pre class="bg-slate-800 text-white p-4 rounded-lg mt-2"><code>{"email": ["Enter a valid email address."]}</code></pre>
+                    </article>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Simple scroll spy for nav links
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active-link');
+                            if (link.getAttribute('href').substring(1) === entry.target.id || (link.getAttribute('href').substring(1) + '-endpoints') === entry.target.id) {
+                                link.classList.add('active-link');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+
+</body>
+</html>

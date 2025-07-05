@@ -108,7 +108,12 @@ admin.site.register(ServiceAddressMapping)
 admin.site.register(CustomerService)
 admin.site.register(ServiceReview)
 admin.site.register(Coupon)
-admin.site.register(ContactForm)
+
+class ContactFormAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'outlet_type', 'location', 'brand_name', 'created_at')
+    list_filter = ('created_at',)
+
+admin.site.register(ContactForm, ContactFormAdmin)
 admin.site.register(Tag)
 admin.site.register(Blog)
 
