@@ -1,33 +1,48 @@
 import { useState, useMemo, useEffect } from "react";
 
-const FilterSidebar = ({ filters, onChange, onReset, cities = [], categories = [] }) => {
+const FilterSidebar = ({
+  filters,
+  onChange,
+  onReset,
+  cities = [],
+  categories = [],
+}) => {
   const minLimit = 0;
   const maxLimit = 10000000;
 
-  // Local state for temporary filter values (before search is clicked)
+  // Local state for temporary filter values
   const [tempFilters, setTempFilters] = useState({
-    location: '',
-    category: '',
-    property_for: '',
-    minPrice: '',
-    maxPrice: ''
+    location: "",
+    category: "",
+    property_for: "",
+    minPrice: "",
+    maxPrice: "",
   });
 
   const [minPrice, setMinPrice] = useState(minLimit);
   const [maxPrice, setMaxPrice] = useState(maxLimit);
 
-  // Initialize temp filters with current filters on component mount
+  // ✅ Update tempFilters whenever filters prop changes
   useEffect(() => {
     setTempFilters(filters);
-    if (filters.minPrice) setMinPrice(Number(filters.minPrice));
-    if (filters.maxPrice) setMaxPrice(Number(filters.maxPrice));
-  }, []);
+    if (filters.minPrice) {
+      setMinPrice(Number(filters.minPrice));
+    } else {
+      setMinPrice(minLimit);
+    }
+
+    if (filters.maxPrice) {
+      setMaxPrice(Number(filters.maxPrice));
+    } else {
+      setMaxPrice(maxLimit);
+    }
+  }, [filters]);
 
   const handleMinChange = (e) => {
     const value = Number(e.target.value);
     if (value <= maxPrice) {
       setMinPrice(value);
-      setTempFilters(prev => ({ ...prev, minPrice: value.toString() }));
+      setTempFilters((prev) => ({ ...prev, minPrice: value.toString() }));
     }
   };
 
@@ -35,53 +50,52 @@ const FilterSidebar = ({ filters, onChange, onReset, cities = [], categories = [
     const value = Number(e.target.value);
     if (value >= minPrice) {
       setMaxPrice(value);
-      setTempFilters(prev => ({ ...prev, maxPrice: value.toString() }));
+      setTempFilters((prev) => ({ ...prev, maxPrice: value.toString() }));
     }
   };
 
-  // Handle temporary filter changes (doesn't apply immediately)
   const handleTempFilterChange = (key, value) => {
-    setTempFilters(prev => ({ ...prev, [key]: value }));
+    setTempFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  // Handle search button click - apply all filters using existing onChange
   const handleSearch = () => {
-    // Apply all temp filters using the existing onChange prop
-    Object.keys(tempFilters).forEach(key => {
-      if (tempFilters[key] !== (filters[key] || '')) {
+    // ✅ Apply all temp filters using the onChange callback
+    Object.keys(tempFilters).forEach((key) => {
+      if (tempFilters[key] !== (filters[key] || "")) {
         onChange(key, tempFilters[key]);
       }
     });
   };
 
-  // Handle reset - clear both temp filters and applied filters
   const handleReset = () => {
     const resetFilters = {
-      location: '',
-      category: '',
-      property_for: '',
-      minPrice: '',
-      maxPrice: ''
+      location: "",
+      category: "",
+      property_for: "",
+      minPrice: "",
+      maxPrice: "",
     };
     setTempFilters(resetFilters);
     setMinPrice(minLimit);
     setMaxPrice(maxLimit);
-    onReset();
+    onReset(); // ✅ Reset parent filters
   };
 
   const dynamicFilterOptions = useMemo(() => {
-    // Process cities data - your API returns array of objects with {id, name}
-    let locationOptions = ['All Locations'];
-    if (cities && Array.isArray(cities) && cities.length > 0) {
-      locationOptions = ['All Locations', ...cities.map(city => city.name)];
+    const locationOptions = [{ id: "", name: "All Locations" }];
+    if (Array.isArray(cities) && cities.length > 0) {
+      locationOptions.push(
+        ...cities.map((city) => ({ id: city.id, name: city.name }))
+      );
     }
 
-    // Process categories data - your API returns array of objects with {id, name, image}
-    let categoryOptions = ['All Categories'];
-    if (categories && Array.isArray(categories) && categories.length > 0) {
-      categoryOptions = ['All Categories', ...categories.map(cat => cat.name)];
+    const categoryOptions = [{ id: "", name: "All Categories" }];
+    if (Array.isArray(categories) && categories.length > 0) {
+      categoryOptions.push(
+        ...categories.map((cat) => ({ id: cat.id, name: cat.name }))
+      );
     }
-    
+
     return [
       {
         label: "Location",
@@ -96,7 +110,11 @@ const FilterSidebar = ({ filters, onChange, onReset, cities = [], categories = [
       {
         label: "Property For",
         key: "property_for",
-        options: ["All", "Sale", "Rent"],
+        options: [
+          { id: "", name: "All" },
+          { id: "1", name: "Sale" },
+          { id: "0", name: "Rent" },
+        ],
       },
     ];
   }, [cities, categories]);
@@ -109,13 +127,13 @@ const FilterSidebar = ({ filters, onChange, onReset, cities = [], categories = [
             {label}
           </label>
           <select
-            value={tempFilters[key] || ''}
+            value={tempFilters[key] || ""}
             onChange={(e) => handleTempFilterChange(key, e.target.value)}
             className="w-full border rounded-lg px-4 py-2 bg-white"
           >
-            {options.map((opt, index) => (
-              <option key={`${opt}-${index}`} value={opt}>
-                {opt}
+            {options.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.name}
               </option>
             ))}
           </select>
@@ -158,18 +176,18 @@ const FilterSidebar = ({ filters, onChange, onReset, cities = [], categories = [
             style={{ zIndex: maxPrice <= minPrice ? 40 : 30 }}
           />
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <input
             placeholder="₹0"
-            value={tempFilters.minPrice || ''}
+            value={tempFilters.minPrice || ""}
             onChange={(e) => handleTempFilterChange("minPrice", e.target.value)}
             className="w-1/2 border rounded-lg px-3 py-2"
           />
           <span className="text-gray-500">–</span>
           <input
             placeholder="₹1 Cr+"
-            value={tempFilters.maxPrice || ''}
+            value={tempFilters.maxPrice || ""}
             onChange={(e) => handleTempFilterChange("maxPrice", e.target.value)}
             className="w-1/2 border rounded-lg px-3 py-2"
           />

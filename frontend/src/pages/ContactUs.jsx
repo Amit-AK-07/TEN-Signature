@@ -12,6 +12,8 @@ const ContactUs = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState(null); // ✅ To show success/error message
+  const [messageType, setMessageType] = useState(""); // ✅ 'success' or 'error'
 
   // Predefined cities list
   const cities = [
@@ -22,15 +24,11 @@ const ContactUs = () => {
     "Ghaziabad (Delhi NCR)",
     "Mumbai",
     "Bangalore",
-    "Other"
+    "Other",
   ];
 
   // Hardcoded outlet types
-  const outletTypes = [
-    "Cloud kitchen",
-    "Restaurant",
-    "Take Away"
-  ];
+  const outletTypes = ["Cloud kitchen", "Restaurant", "Take Away"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,20 +38,27 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setMessage(null); // Clear any previous message
+
     try {
-      const response = await fetch('https://broki-clone-ui.onrender.com/api/submit-contact-form/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://broki-clone-ui.onrender.com/api/submit-contact-form/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Form submitted successfully:', result);
-        alert('Thank you! Your form has been submitted successfully.');
+        console.log("Form submitted successfully:", result);
+
+        setMessage("✅ Thank you! Your form has been submitted successfully.");
+        setMessageType("success"); // ✅ Success type
+
         // Reset form
         setFormData({
           name: "",
@@ -64,12 +69,18 @@ const ContactUs = () => {
           brand_name: "",
         });
       } else {
-        console.error('Form submission failed');
-        alert('Sorry, there was an error submitting your form. Please try again.');
+        console.error("Form submission failed");
+        setMessage(
+          "❌ Sorry, there was an error submitting your form. Please try again."
+        );
+        setMessageType("error"); // ✅ Error type
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Sorry, there was an error submitting your form. Please try again.');
+      console.error("Error submitting form:", error);
+      setMessage(
+        "❌ Sorry, there was an error submitting your form. Please try again."
+      );
+      setMessageType("error"); // ✅ Error type
     } finally {
       setIsSubmitting(false);
     }
@@ -121,8 +132,11 @@ const ContactUs = () => {
                 Have questions? Get in touch!
               </h2>
               <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* Form Fields */}
                 <div>
-                  <label className="block text-sm font-medium mb-1">Your Name</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Your Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -148,7 +162,9 @@ const ContactUs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -179,7 +195,9 @@ const ContactUs = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Location</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Location
+                  </label>
                   <select
                     name="location"
                     value={formData.location}
@@ -208,6 +226,7 @@ const ContactUs = () => {
                     placeholder="E.g. Flashback Cafe Or NA"
                   />
                 </div>
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -215,6 +234,19 @@ const ContactUs = () => {
                 >
                   {isSubmitting ? "Submitting..." : "Submit"}
                 </button>
+
+                {/* ✅ Success/Error Message */}
+                {message && (
+                  <p
+                    className={`text-sm mt-2 ${
+                      messageType === "success"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {message}
+                  </p>
+                )}
               </form>
             </div>
 
@@ -321,6 +353,19 @@ const ContactUs = () => {
                 >
                   {isSubmitting ? "Submitting..." : "Submit"}
                 </button>
+
+                {/* ✅ Success/Error Message */}
+                {message && (
+                  <p
+                    className={`text-sm mt-2 ${
+                      messageType === "success"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {message}
+                  </p>
+                )}
               </form>
             </div>
           </div>

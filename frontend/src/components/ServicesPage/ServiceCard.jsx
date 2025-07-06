@@ -1,12 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 const ServiceCard = ({ card, view }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/services/${card.id}`);
+  };
+
   return (
     <div
       key={card.id}
+      onClick={handleCardClick}
       className={`bg-white shadow-md rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group fade-in-up ${
         view === "list" ? "flex" : "flex flex-col"
       }`}
@@ -45,12 +52,12 @@ const ServiceCard = ({ card, view }) => {
       <div className="p-4 flex flex-col justify-between gap-2 w-full">
         <div>
           <h3 className="text-base font-semibold text-gray-900">
-            <Link
-              to={`/services/${card.id}`}
-              className="text-[15px] font-semibold font-[poppins] text-black hover:text-[#26c4a0] hover:underline"
+            <span
+              className="text-[15px] font-semibold font-[poppins] text-black group-hover:text-[#26c4a0]"
+              onClick={(e) => e.stopPropagation()}
             >
               {card.name}
-            </Link>
+            </span>
           </h3>
           <div className="flex items-center text-[13px] font-[poppins] text-gray-500 gap-2 mt-1">
             <span className="flex items-center gap-1">
@@ -68,6 +75,7 @@ const ServiceCard = ({ card, view }) => {
           </span>
           <Link
             to={`/services/${card.id}`}
+            onClick={(e) => e.stopPropagation()} // Prevent parent click
             className="text-[15px] font-semibold font-[poppins] text-black hover:underline"
           >
             Book Now

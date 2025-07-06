@@ -1,6 +1,7 @@
 import ServiceSearchForm from "./ServiceSearchForm";
 import RealEstateSearchForm from "./RealEstateSearchForm";
 import { tabss } from "../../lib/Constant";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchTabs({
   selectedTab,
@@ -8,6 +9,8 @@ export default function SearchTabs({
   setSelectedTab,
   ...props
 }) {
+  const navigate = useNavigate();
+
   const {
     activeTab,
     setActiveTab,
@@ -17,7 +20,6 @@ export default function SearchTabs({
     selectedCity,
     selectedCategory,
     searchQuery,
-    onSubmit,
   } = props;
 
   const handleTab = (id) => {
@@ -27,8 +29,17 @@ export default function SearchTabs({
     setSelectedCategory("Residential");
   };
 
+  const handleServiceSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      // Navigate to services page with search query
+      navigate(`/services?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
-    <div className="bg-[#d9f4f0] rounded-xl  w-full animate-up-5 p-3">
+    <div className="bg-[#d9f4f0] rounded-xl w-full animate-up-5 p-3">
+      {/* Tabs */}
       <div className="flex border-b border-gray-200 rounded-t-xl max-w-60 bg-white">
         {tabss.map((tab) => (
           <button
@@ -44,11 +55,13 @@ export default function SearchTabs({
           </button>
         ))}
       </div>
+
+      {/* Conditional Search Forms */}
       {activeTab === "services" ? (
         <ServiceSearchForm
           value={searchQuery}
           onChange={setSearchQuery}
-          onSubmit={onSubmit}
+          onSubmit={handleServiceSubmit}
         />
       ) : (
         <RealEstateSearchForm
@@ -56,9 +69,8 @@ export default function SearchTabs({
           setSelectedCity={setSelectedCity}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
-          // onOpenAdvanced={showAdvancedModal}
           onOpenAdvanced={props.onOpenAdvanced}
-          onSubmit={onSubmit}
+          onSubmit={props.onSubmit} // keep using parent onSubmit for real estate
         />
       )}
     </div>

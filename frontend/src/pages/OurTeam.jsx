@@ -51,11 +51,9 @@ const OurTeam = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        variants={containerVariants}
       >
         <motion.h2
           className="text-3xl font-bold mb-10 text-gray-900"
-          variants={itemVariants}
         >
           Meet Our Founders
         </motion.h2>
@@ -64,7 +62,6 @@ const OurTeam = () => {
           {founders.map((founder, idx) => (
             <motion.div
               key={idx}
-              variants={itemVariants}
               className="bg-white rounded-xl shadow p-6 w-full md:w-1/2 lg:w-1/3 mx-auto"
             >
               <div className="overflow-hidden rounded-full mb-4">

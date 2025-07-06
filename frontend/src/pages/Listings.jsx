@@ -1,12 +1,19 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { defaultFilters } from "../lib/Constant";
-import { fetchProperties, fetchCities, fetchCategories } from "../apiAction/properties/Index";
+import {
+  fetchProperties,
+  fetchCities,
+  fetchCategories,
+} from "../apiAction/properties/Index";
 import FilterSidebar from "../components/FilterSidebar";
 import ListingCard from "../components/ListingCard";
 import Pagination from "../components/Pagination";
 import { motion } from "framer-motion";
 
 const Listing = () => {
+  const location = useLocation();
+
   const [listings, setListings] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,146 +28,130 @@ const Listing = () => {
 
   const listingsPerPage = 6;
 
-  // Fetch cities and categories on mount
+  const didFetchFilters = useRef(false);
+
+  // Parse filters from URL
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const city = queryParams.get("city");
+    const category = queryParams.get("category");
+    const minPrice = queryParams.get("min_price");
+    const maxPrice = queryParams.get("max_price");
+    const propertyFor = queryParams.get("property_for");
+
+    setFilters((prev) => ({
+      ...prev,
+      location: city || "",
+      category: category || "",
+      minPrice: minPrice || "",
+      maxPrice: maxPrice || "",
+      property_for: propertyFor || "",
+    }));
+
+    setCurrentPage(1);
+  }, [location.search]);
+
+  // Fetch cities & categories
+  useEffect(() => {
+    if (didFetchFilters.current) return;
+    didFetchFilters.current = true;
+
     const fetchFilterData = async () => {
       try {
         const [citiesData, categoriesData] = await Promise.all([
           fetchCities(),
-          fetchCategories()
+          fetchCategories(),
         ]);
-        
-        // Handle different possible response structures
-        let processedCities = [];
-        let processedCategories = [];
-        
-        // Process cities data - your API returns paginated response with results array
-        if (citiesData && citiesData.results && Array.isArray(citiesData.results)) {
-          // Handle paginated response (your API structure)
-          processedCities = citiesData.results;
-        } else if (Array.isArray(citiesData)) {
-          // Handle direct array response
-          processedCities = citiesData;
-        } else if (citiesData && citiesData.data && Array.isArray(citiesData.data)) {
-          // Handle wrapped response
-          processedCities = citiesData.data;
-        }
-        
-        // Process categories data - your API returns paginated response with results array
-        if (categoriesData && categoriesData.results && Array.isArray(categoriesData.results)) {
-          // Handle paginated response (your API structure)
-          processedCategories = categoriesData.results;
-        } else if (Array.isArray(categoriesData)) {
-          // Handle direct array response
-          processedCategories = categoriesData;
-        } else if (categoriesData && categoriesData.data && Array.isArray(categoriesData.data)) {
-          // Handle wrapped response
-          processedCategories = categoriesData.data;
-        }
-        
-        setCities(processedCities);
-        setCategories(processedCategories);
-        
+        setCities(citiesData?.results || []);
+        setCategories(categoriesData?.results || []);
       } catch (err) {
-        setCities([]);
-        setCategories([]);
-        setError("Failed to load filter options. Please refresh the page.");
+        console.error("Failed to fetch filters:", err);
+        setError("Failed to load filter options.");
       }
     };
-    
+
     fetchFilterData();
   }, []);
 
-  // Fetch properties whenever filters, page, or sort changes
+  // Fetch listings
   useEffect(() => {
     const fetchListings = async () => {
+      if (
+        !didFetchFilters.current ||
+        cities.length === 0 ||
+        categories.length === 0
+      )
+        return;
+
       setLoading(true);
       setError(null);
-      
+
       try {
-        const params = {
-          page: currentPage,
-          page_size: listingsPerPage,
-        };
+        const params = { page_size: 1000 };
 
-        // Add filters with better error handling
-        if (filters.location && filters.location !== "All Locations") {
-          const selectedCity = cities.find(city => {
-            // Handle different possible city object structures
-            return city.name === filters.location || 
-                   city.city === filters.location || 
-                   city.title === filters.location;
-          });
-          if (selectedCity) {
-            params.city = selectedCity.id;
-          }
+        // Only send valid filters
+        if (
+          filters.location &&
+          filters.location !== "" &&
+          filters.location !== "All Locations"
+        ) {
+          params.city = filters.location;
         }
 
-        if (filters.category && filters.category !== "All Categories") {
-          const selectedCategory = categories.find(cat => {
-            // Handle different possible category object structures
-            return cat.name === filters.category || 
-                   cat.category === filters.category || 
-                   cat.title === filters.category;
-          });
-          if (selectedCategory) {
-            params.category = selectedCategory.id;
-          }
+        if (
+          filters.category &&
+          filters.category !== "" &&
+          filters.category !== "All Categories"
+        ) {
+          params.category = filters.category;
         }
 
-        // Add property_for filter
-        if (filters.property_for && filters.property_for !== "All") {
-          params.property_for = filters.property_for === "Sale" ? 1 : 0;
+        if (
+          filters.property_for &&
+          filters.property_for !== "" &&
+          filters.property_for !== "All"
+        ) {
+          params.property_for = filters.property_for;
         }
 
-        // Add price filters with better validation
-        if (filters.minPrice && filters.minPrice !== "No Min" && filters.minPrice !== "") {
-          const minPrice = typeof filters.minPrice === 'string' 
-            ? parseInt(filters.minPrice.replace(/[^\d]/g, "")) 
-            : parseInt(filters.minPrice);
-          if (!isNaN(minPrice) && minPrice > 0) {
-            params.price_min = minPrice;
-          }
-        }
-        
-        if (filters.maxPrice && filters.maxPrice !== "No Max" && filters.maxPrice !== "") {
-          const maxPrice = typeof filters.maxPrice === 'string' 
-            ? parseInt(filters.maxPrice.replace(/[^\d]/g, "")) 
-            : parseInt(filters.maxPrice);
-          if (!isNaN(maxPrice) && maxPrice > 0) {
-            params.price_max = maxPrice;
-          }
-        }
-
-        // Add sorting
+        // Sorting
         if (sortBy === "Price Low") {
           params.ordering = "price";
         } else if (sortBy === "Price High") {
           params.ordering = "-price";
-        } else if (sortBy === "Newest") {
+        } else {
           params.ordering = "-id";
         }
 
         const response = await fetchProperties(params);
-        
-        if (response && response.results) {
-          // Django REST framework pagination response
-          setListings(response.results);
-          setTotalCount(response.count);
-          setTotalPages(Math.ceil(response.count / listingsPerPage));
-        } else if (Array.isArray(response)) {
-          // Direct array response
-          setListings(response);
-          setTotalCount(response.length);
-          setTotalPages(Math.ceil(response.length / listingsPerPage));
-        } else {
-          // Handle unexpected response structure
-          setListings([]);
-          setTotalCount(0);
-          setTotalPages(0);
-        }
+        let results = response?.results || [];
+
+        // Apply price filter client-side
+        const minPrice = parseInt(
+          filters.minPrice?.toString().replace(/[^\d]/g, "")
+        );
+        const maxPrice = parseInt(
+          filters.maxPrice?.toString().replace(/[^\d]/g, "")
+        );
+
+        results = results.filter((item) => {
+          const price = parseInt(item.price || 0);
+          const meetsMin = !isNaN(minPrice) ? price >= minPrice : true;
+          const meetsMax = !isNaN(maxPrice) ? price <= maxPrice : true;
+          return meetsMin && meetsMax;
+        });
+
+        const paginated = results.slice(
+          (currentPage - 1) * listingsPerPage,
+          currentPage * listingsPerPage
+        );
+
+        setListings(paginated);
+        setTotalCount(results.length);
+        setTotalPages(Math.ceil(results.length / listingsPerPage));
       } catch (err) {
-        setError("Failed to load listings. Please try again.");
+        console.error("Error fetching listings:", err);
+        setError("Failed to load listings.");
         setListings([]);
         setTotalCount(0);
         setTotalPages(0);
@@ -169,12 +160,7 @@ const Listing = () => {
       }
     };
 
-    // Only fetch listings if we have cities and categories data (for filtering)
-    // or if no location/category filters are applied
-    if (cities.length > 0 || categories.length > 0 || 
-        (filters.location === "All Locations" && filters.category === "All Categories")) {
-      fetchListings();
-    }
+    fetchListings();
   }, [filters, currentPage, sortBy, cities, categories]);
 
   const handleFilterChange = (key, value) => {
@@ -187,67 +173,28 @@ const Listing = () => {
     setCurrentPage(1);
   };
 
-  // Transform API data to match ListingCard expectations
   const transformedListings = useMemo(() => {
-    if (!Array.isArray(listings)) {
-      return [];
-    }
-    
-    const transformed = listings.map(property => {
-      // Handle different possible property object structures
-      const cityName = property.city?.name || property.city || property.location || 'Unknown';
-      const propertyImage = property.property_image || property.image || property.img || '';
-      const priceFormat = property.price_format || (property.price ? `₹${property.price}` : 'Price not available');
-      
-      return {
-        id: property.id,
-        price: priceFormat,
-        name: property.name || property.title || 'Unnamed Property',
-        title: property.name || property.title || 'Unnamed Property',
-        location: cityName,
-        size: property.sqft ? `${property.sqft} sqft` : 'Size not available',
-        sqft: property.sqft || 0,
-        image: propertyImage,
-        img: propertyImage, // Keep both for compatibility
-        featured: property.premium_property || property.featured || false,
-        type: property.property_for === 0 ? "For Rent" : "For Sale",
-        // Add any other fields your ListingCard component expects
-        address: property.address || '',
-        property_for: property.property_for,
-        description: property.description || '',
-      };
-    });
-    
-    return transformed;
+    return listings.map((property) => ({
+      id: property.id,
+      price:
+        property.price_format ||
+        `property.price ? ₹${property.price} : "Price not available"`,
+      name: property.name || "Unnamed Property",
+      location:
+        property.city?.name || property.city || property.location || "Unknown",
+      sqft: property.sqft || null,
+      image: property.property_image || "",
+      featured: property.premium_property || false,
+      type: property.property_for === 0 ? "For Rent" : "For Sale",
+      description: property.description || "",
+    }));
   }, [listings]);
-
-  const indexOfFirst = (currentPage - 1) * listingsPerPage;
-  const indexOfLast = Math.min(indexOfFirst + listingsPerPage, totalCount);
-  
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  };
 
   return (
     <motion.section
       initial="hidden"
       whileInView="show"
       viewport={{ once: true }}
-      variants={containerVariants}
     >
       <div className="pt-2 sm:p-6 bg-white min-h-screen font-sans">
         <section>
@@ -272,89 +219,77 @@ const Listing = () => {
 
             {/* Listings */}
             <section className="flex-1 w-full">
-              {/* Top bar */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+              <div className="flex flex-wrap justify-end sm:justify-between items-center mb-4 gap-2">
                 <p className="text-sm text-gray-500">
-                  {loading ? "Loading..." : `Showing ${indexOfFirst + 1}–${indexOfLast} of ${totalCount} results`}
+                  {loading
+                    ? "Loading..."
+                    : `Showing ${totalCount} result${
+                        totalCount === 1 ? "" : "s"
+                      }`}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <label className="text-sm text-gray-600">Sort by</label>
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-600 text-sm">Sort by</span>
                   <select
-                    className="border rounded px-2 py-1 text-sm"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
                   >
                     <option>Newest</option>
                     <option>Price High</option>
                     <option>Price Low</option>
                   </select>
 
-                  <button
-                    className={`text-sm px-2 py-1 rounded ${
-                      viewType === "grid"
-                        ? "underline text-gray-900"
-                        : "text-gray-500"
-                    }`}
-                    onClick={() => setViewType("grid")}
-                  >
-                    Grid
-                  </button>
-                  <button
-                    className={`text-sm px-2 py-1 rounded ${
-                      viewType === "list"
-                        ? "underline text-gray-900"
-                        : "text-gray-500"
-                    }`}
-                    onClick={() => setViewType("list")}
-                  >
-                    List
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setViewType("grid")}
+                      className={`text-sm font-medium ${
+                        viewType === "grid"
+                          ? "underline text-black"
+                          : "text-gray-500 hover:text-black"
+                      }`}
+                    >
+                      Grid
+                    </button>
+                    <button
+                      onClick={() => setViewType("list")}
+                      className={`text-sm font-medium ${
+                        viewType === "list"
+                          ? "underline text-black"
+                          : "text-gray-500 hover:text-black"
+                      }`}
+                    >
+                      List
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {/* Cards */}
-              <motion.section
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={containerVariants}
-              >
-                {loading ? (
-                  <div className="flex justify-center items-center h-64">
-                    <div className="text-lg text-gray-500">Loading properties...</div>
-                  </div>
-                ) : error ? (
-                  <div className="flex justify-center items-center h-64">
-                    <div className="text-lg text-red-500">{error}</div>
-                  </div>
-                ) : transformedListings.length === 0 ? (
-                  <div className="flex justify-center items-center h-64">
-                    <div className="text-lg text-gray-500">No properties found matching your criteria.</div>
-                  </div>
-                ) : (
-                  <>
-                    <div
-                      className={`grid gap-6 mt-6 ${
-                        viewType === "grid"
-                          ? "grid-cols-1 sm:grid-cols-2"
-                          : "grid-cols-1"
-                      }`}
-                    >
-                      {transformedListings.map((item) => (
-                        <div key={item.id} className="w-full">
-                          <ListingCard
-                            property={item}
-                            viewType={viewType}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </motion.section>
+              {loading ? (
+                <div className="text-center py-10">Loading listings...</div>
+              ) : error ? (
+                <div className="text-center text-red-500">{error}</div>
+              ) : transformedListings.length === 0 ? (
+                <div className="text-center py-10">No listings found.</div>
+              ) : (
+                <div
+                  className={`grid gap-6 mt-6 ${
+                    viewType === "grid"
+                      ? "grid-cols-1 sm:grid-cols-2"
+                      : "grid-cols-1"
+                  }`}
+                >
+                  {transformedListings.map((item) => (
+                    <ListingCard
+                      key={item.id}
+                      property={item}
+                      viewType={viewType}
+                    />
+                  ))}
+                </div>
+              )}
 
-              {/* Pagination */}
               <div className="mt-6">
                 <Pagination
                   currentPage={currentPage}

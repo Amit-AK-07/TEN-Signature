@@ -6,33 +6,54 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import ServiceCard from "../components/ServicesPage/ServiceCard"; // 👈 Import ServiceCard
+import { Link, useLocation } from "react-router-dom";
+import ServiceCard from "../components/ServicesPage/ServiceCard";
 
 const Services = () => {
-  const [cards, setCards] = useState([]);
+  const [allCards, setAllCards] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const [sortOption, setSortOption] = useState("Newest");
   const [view, setView] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+
   useEffect(() => {
-    axios
-      .get("https://broki-clone-ui.onrender.com/api/service-list/")
-      .then((response) => {
-        console.log("API Response:", response.data);
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get(
+          "https://broki-clone-ui.onrender.com/api/service-list/"
+        );
         if (response.data && Array.isArray(response.data.data)) {
-          setCards(response.data.data);
+          setAllCards(response.data.data);
         } else {
-          console.error("Unexpected API response format:", response.data);
+          setAllCards([]);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching services:", error);
-      });
+        setAllCards([]);
+      }
+    };
+
+    fetchServices();
   }, []);
 
-  const sortedCards = [...cards].sort((a, b) => {
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = allCards.filter((service) =>
+        service.name.toLowerCase().includes(searchQuery)
+      );
+      setFilteredCards(filtered);
+    } else {
+      setFilteredCards(allCards);
+    }
+    setCurrentPage(1);
+  }, [searchQuery, allCards]);
+
+  const sortedCards = [...filteredCards].sort((a, b) => {
     switch (sortOption) {
       case "Price Low":
         return parseFloat(a.price) - parseFloat(b.price);
@@ -56,14 +77,16 @@ const Services = () => {
   return (
     <div className="max-w-[1300px] mx-auto px-2 sm:px-4 py-10">
       <div className="mb-6">
-        <h1 className="text-[30px] sm:text-[36px] font-semibold text-left font-[poppins]">
-          Professional Food Photography for Your F&B Business
+        <h1 className="text-[30px] sm:text-[36px] font-semibold text-left">
+          {searchQuery
+            ? `Search Results for "${searchQuery}"`
+            : "All Professional Services"}
         </h1>
-        <div className="text-sm text-black-600 mt-5 font-[poppins]">
-          <Link to="/" className="text-black-600 hover:text-[#26c4a0]">
+        <div className="text-sm text-gray-600 mt-2">
+          <Link to="/" className="hover:text-[#26c4a0]">
             Home
           </Link>{" "}
-          / Food Photography
+          /{searchQuery ? ` Search: ${searchQuery}` : " Services"}
         </div>
       </div>
 
@@ -113,48 +136,56 @@ const Services = () => {
       </div>
 
       {/* Cards */}
-      <div
-        className={`${
-          view === "grid"
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            : "grid grid-cols-1 md:grid-cols-2 gap-6"
-        }`}
-      >
-        {paginatedCards.map((card) => (
-          <ServiceCard key={card.id} card={card} view={view} />
-        ))}
-      </div>
+      {paginatedCards.length > 0 ? (
+        <div
+          className={`${
+            view === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              : "grid grid-cols-1 md:grid-cols-2 gap-6"
+          }`}
+        >
+          {paginatedCards.map((card) => (
+            <ServiceCard key={card.id} card={card} view={view} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-500 mt-10">
+          No services found for "{searchQuery}".
+        </p>
+      )}
 
       {/* Pagination */}
-      <div className="flex justify-center mt-10 gap-4 text-sm font-medium">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className={`flex items-center gap-1 px-2 py-1 rounded border transition-colors ${
-            currentPage === 1
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-[#26c4a0] text-white hover:bg-[#26c4a0]"
-          }`}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-        </button>
-        <span className="flex items-center text-[#26c4a0] gap-1">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className={`flex items-center gap-1 px-2 py-1 rounded border transition-colors ${
-            currentPage === totalPages
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-[#26c4a0] text-white hover:bg-[#26c4a0]"
-          }`}
-        >
-          <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-        </button>
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-10 gap-4 text-sm font-medium">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`flex items-center gap-1 px-2 py-1 rounded border transition-colors ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-[#26c4a0] text-white hover:bg-[#26c4a0]"
+            }`}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+          </button>
+          <span className="flex items-center text-[#26c4a0] gap-1">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`flex items-center gap-1 px-2 py-1 rounded border transition-colors ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-[#26c4a0] text-white hover:bg-[#26c4a0]"
+            }`}
+          >
+            <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
