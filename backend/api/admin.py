@@ -3,7 +3,8 @@ from .models import OutletForm, Property, City, Category, PropertyGallery, Prope
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from django.contrib.admin.sites import AlreadyRegistered
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin as DefaultOutstandingTokenAdmin, BlacklistedTokenAdmin as DefaultBlacklistedTokenAdmin
-
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 class OutletFormAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'outlet_type', 'location', 'brand', 'max_budget', 'min_size')
     search_fields = ('name', 'email', 'phone', 'brand', 'location')
@@ -117,6 +118,8 @@ admin.site.register(ContactForm, ContactFormAdmin)
 admin.site.register(Tag)
 admin.site.register(Blog)
 
+class CustomUserAdmin(UserAdmin):
+    ordering = ('-date_joined',)
 
-
-
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)

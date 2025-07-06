@@ -1,5 +1,6 @@
 import { useState } from "react";
 import VisitOffice from "../components/VisitOffice";
+import { BASE_URL } from "../lib/config";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const ContactUs = () => {
 
     try {
       const response = await fetch(
-        "https://broki-clone-ui.onrender.com/api/submit-contact-form/",
+        `${BASE_URL}/submit-contact-form/`,
         {
           method: "POST",
           headers: {

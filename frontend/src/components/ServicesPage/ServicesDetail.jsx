@@ -6,6 +6,7 @@ import ServiceImageGallery from "./ServicesImageGallery";
 import ServiceOverview from "./ServicesOverview";
 import ServiceAddOnSidebar from "./ServicesSidebar";
 import RelatedService from "./RelatedService";
+import { BASE_URL } from "../../lib/config";
 
 const ServiceDetail = () => {
   const { serviceId } = useParams();
@@ -19,7 +20,7 @@ const ServiceDetail = () => {
   useEffect(() => {
     axios
       .get(
-        `https://broki-clone-ui.onrender.com/api/service-detail/${serviceId}/`
+        `${BASE_URL}/service-detail/${serviceId}/`
       )
       .then((response) => {
         setServiceData(response.data);

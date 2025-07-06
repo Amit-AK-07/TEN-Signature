@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../lib/config";
 
 const Blogs = () => {
   const [blogPosts, setBlogPosts] = useState([]);
@@ -16,7 +17,7 @@ const Blogs = () => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get(
-          "https://broki-clone-ui.onrender.com/api/article-list/"
+          `${BASE_URL}/article-list/`
         );
         const blogs = response.data.data || [];
         setBlogPosts(blogs);
@@ -30,7 +31,7 @@ const Blogs = () => {
     const fetchTags = async () => {
       try {
         const response = await axios.get(
-          "https://broki-clone-ui.onrender.com/api/tags-list/"
+          `${BASE_URL}/tags-list/`
         );
         setTags(response.data.results || []);
       } catch (error) {

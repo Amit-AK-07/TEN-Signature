@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
 import ServiceCard from "../components/ServicesPage/ServiceCard";
+import { BASE_URL } from "../lib/config";
 
 const Services = () => {
   const [allCards, setAllCards] = useState([]);
@@ -25,7 +26,7 @@ const Services = () => {
     const fetchServices = async () => {
       try {
         const response = await axios.get(
-          "https://broki-clone-ui.onrender.com/api/service-list/"
+          `${BASE_URL}/service-list/`
         );
         if (response.data && Array.isArray(response.data.data)) {
           setAllCards(response.data.data);

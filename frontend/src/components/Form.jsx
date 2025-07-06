@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { locationOptions, outletOptions } from "../lib/Constant";
 import FormImg from "../assets/images/form.webp";
+import { BASE_URL } from "../lib/config";
 
 // Animation Variants
 const containerVariants = {
@@ -110,7 +111,7 @@ const Form = () => {
 
     try {
       const response = await axios.post(
-        "https://broki-clone-ui.onrender.com/api/submit-form/",
+        `${BASE_URL}/submit-form/`,
         formData
       );
 

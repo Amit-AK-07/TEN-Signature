@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import NearbyListings from "./NearbyListings";
 import axios from "axios";
+import { BASE_URL } from "../lib/config";
 
 const BlogsPostsCard = () => {
   const { id } = useParams(); // Get blog ID from URL
@@ -19,7 +20,7 @@ const BlogsPostsCard = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(
-          `https://broki-clone-ui.onrender.com/api/article-detail/${id}/`
+          `${BASE_URL}/article-detail/${id}/`
         );
         setPost(response.data);
       } catch (error) {

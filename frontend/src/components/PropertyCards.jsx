@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PropertyCard from "./PropertyCard";
+import { BASE_URL } from "../lib/config";
 
 const PropertyCards = ({
   activeTab,
   city,
   excludeId,
-  url = "/api/filter-property-list/",
+  url = "/filter-property-list/",
 }) => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ const PropertyCards = ({
         if (excludeId) params.exclude_id = excludeId;
 
         const res = await axios.get(
-          `https://broki-clone-ui.onrender.com${url}`,
+          `${BASE_URL}${url}`,
           { params }
         );
 
